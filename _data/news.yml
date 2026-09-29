@@ -1,0 +1,25 @@
+# The activity feed. Newest first. One entry per thing that happened:
+# a launch, a talk, a new role, an acceptance, a milestone.
+#
+#   - date: 2026-09-29
+#     text: Joined **Somewhere** as a research engineer, working on [X](https://…).
+#
+# `text` is Markdown. Keep it to one or two sentences.
+
+# TODO: set the exact dates for these three.
+- date: 2026-09-01
+  text: >-
+    Released [**BanglaBench**](/projects/bangla-bench/), a leaderboard that scores
+    language models directly in Bengali. The first version runs Belebele reading
+    comprehension across GPT, Claude, DeepSeek and Llama.
+
+- date: 2026-08-01
+  text: >-
+    Shipped a [**Kubernetes runtime demo**](/projects/kubernetes-runtime/): a Go service
+    in a minimal container, deployed from manifests with health probes and a
+    cluster-state checker.
+
+- date: 2026-07-01
+  text: >-
+    Open-sourced a [**DeepSeek cloud proxy**](/projects/deepseek-cloud-proxy/) that
+    lets Cursor and Cline use DeepSeek through an OpenAI-compatible endpoint.

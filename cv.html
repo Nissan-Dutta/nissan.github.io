@@ -1,0 +1,58 @@
+---
+title: CV
+permalink: /cv/
+---
+{%- assign cv = site.data.cv -%}
+{%- assign pdf = site.static_files | where: "path", "/assets/cv.pdf" | first -%}
+{%- if pdf %}
+<p class="actions"><a class="button" href="{{ '/assets/cv.pdf' | relative_url }}">Download PDF</a></p>
+{%- endif %}
+
+{%- assign sections = "experience:Experience,education:Education,awards:Awards" | split: "," -%}
+{%- for s in sections %}
+  {%- assign key = s | split: ":" | first -%}
+  {%- assign label = s | split: ":" | last -%}
+  {%- assign entries = cv[key] -%}
+  {%- if entries and entries.size > 0 %}
+<section>
+  <h2>{{ label }}</h2>
+  <ul class="entries">
+    {%- for e in entries %}
+    <li class="entry">
+      <span class="year">{{ e.when }}</span>
+      <div>
+        <span class="title">{{ e.title }}</span>{% if e.where %}<span class="where"> · {{ e.where }}</span>{% endif %}
+        {%- if e.note %}<p class="note">{{ e.note | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>{% endif %}
+      </div>
+    </li>
+    {%- endfor %}
+  </ul>
+</section>
+  {%- endif %}
+{%- endfor %}
+
+{%- if site.projects.size > 0 %}
+<section>
+  <h2>Projects</h2>
+  {% include project-list.html %}
+</section>
+{%- endif %}
+
+{%- if site.data.publications.size > 0 %}
+<section>
+  <h2>Publications</h2>
+  <p><a href="{{ '/publications/' | relative_url }}">See all publications →</a></p>
+</section>
+{%- endif %}
+
+{%- if cv.skills and cv.skills.size > 0 %}
+<section>
+  <h2>Skills</h2>
+  <dl class="skills">
+    {%- for g in cv.skills %}
+    <dt>{{ g.group }}</dt>
+    <dd>{{ g.items | join: " · " }}</dd>
+    {%- endfor %}
+  </dl>
+</section>
+{%- endif %}

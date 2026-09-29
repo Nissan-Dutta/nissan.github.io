@@ -1,0 +1,21 @@
+---
+title: News
+lede: Launches, talks, roles and milestones, newest first.
+permalink: /news/
+---
+{%- assign years = site.data.news | group_by_exp: "item", "item.date | date: '%Y'" -%}
+{%- for year in years %}
+<section>
+  <h2>{{ year.name }}</h2>
+  <table class="news">
+    <tbody>
+    {%- for item in year.items %}
+      <tr>
+        <th scope="row"><time datetime="{{ item.date | date: '%Y-%m-%d' }}">{{ item.date | date: "%b %-d" }}</time></th>
+        <td>{{ item.text | markdownify | remove: '<p>' | remove: '</p>' | strip }}</td>
+      </tr>
+    {%- endfor %}
+    </tbody>
+  </table>
+</section>
+{%- endfor %}

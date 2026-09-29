@@ -1,0 +1,21 @@
+{%- assign profile = site.data.profile -%}
+<header class="site-header">
+  <a class="site-name" href="{{ '/' | relative_url }}">{{ profile.name }}</a>
+  <nav class="site-nav" aria-label="Main">
+    {%- for item in site.nav -%}
+      {%- assign show = true -%}
+      {%- if item.requires == "projects" and site.projects.size == 0 -%}{%- assign show = false -%}{%- endif -%}
+      {%- if item.requires == "news" and site.data.news.size == 0 -%}{%- assign show = false -%}{%- endif -%}
+      {%- if item.requires == "publications" and site.data.publications.size == 0 -%}{%- assign show = false -%}{%- endif -%}
+      {%- if show -%}
+        {%- assign current = false -%}
+        {%- if item.url == "/" and page.url == "/" -%}{%- assign current = true -%}
+        {%- elsif item.url != "/" and page.url contains item.url -%}{%- assign current = true -%}{%- endif -%}
+        <a href="{{ item.url | relative_url }}"{% if current %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+    <button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+    </button>
+  </nav>
+</header>

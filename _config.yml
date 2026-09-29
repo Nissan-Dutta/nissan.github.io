@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# Site-wide settings. The public URL lives here and nowhere else.
+# After renaming the GitHub account, set `url` to https://<username>.github.io
+# ---------------------------------------------------------------------------
+
+title: Nissan Dutta
+description: >-
+  Nissan Dutta builds evaluations and tools for language models,
+  and the infrastructure they run on.
+url: "https://nissandutta.github.io"
+baseurl: ""
+lang: en
+theme: null   # no theme gem — every layout lives in this repo
+
+author:
+  name: Nissan Dutta
+
+# Top navigation, in order. A page listed here only shows if it exists;
+# `requires` hides the link while that data file / collection is empty.
+nav:
+  - { title: about,        url: / }
+  - { title: news,         url: /news/,         requires: news }
+  - { title: projects,     url: /projects/,     requires: projects }
+  - { title: publications, url: /publications/, requires: publications }
+  - { title: cv,           url: /cv/ }
+
+# How many news items the home page shows before "all news".
+news_on_home: 5
+
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+defaults:
+  - scope: { path: "", type: projects }
+    values: { layout: project }
+  - scope: { path: "" }
+    values: { layout: page }
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+exclude:
+  - README.md
+  - assets/README.md
+  - CLAUDE.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - .claude
+  - .github

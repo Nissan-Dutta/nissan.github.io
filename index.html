@@ -1,144 +1,41 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nissan Dutta</title>
-<meta name="description" content="Nissan Dutta — what I've built so far and what I'm working toward.">
-<link rel="canonical" href="https://nissandutta31-maker.github.io/">
-<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#14140f" media="(prefers-color-scheme: dark)">
-<meta property="og:type" content="profile">
-<meta property="og:title" content="Nissan Dutta">
-<meta property="og:description" content="What I've built so far and what I'm working toward.">
-<meta property="og:image" content="assets/portrait.jpg">
-<meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%238c3b22'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' fill='%23faf9f6' text-anchor='middle'%3END%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
+---
+layout: default
+title: About
+permalink: /
+---
+{%- assign profile = site.data.profile -%}
+{%- assign words = profile.name | split: " " -%}
+<section class="masthead">
+  <div class="portrait-wrap">
+    <img class="portrait" src="{{ profile.portrait | relative_url }}" width="112" height="112"
+         alt="Portrait of {{ profile.name }}" onerror="this.parentNode.classList.add('no-photo'); this.remove();">
+    <span class="monogram" aria-hidden="true">{% for w in words limit: 2 %}{{ w | slice: 0, 1 | upcase }}{% endfor %}</span>
+  </div>
+  <div>
+    <h1>{{ profile.name }}</h1>
+    <hr class="rule">
+    <p class="tagline">{{ profile.tagline }}</p>
+  </div>
+</section>
 
-<div class="page">
-  <header class="masthead" id="masthead"></header>
-  <p class="contact" id="contact"></p>
-  <main id="main"></main>
-  <footer id="footer"></footer>
+<div class="prose bio">
+{{ profile.bio | markdownify }}
 </div>
 
-<noscript>
-  <div class="page">
-    <h1>Nissan Dutta</h1>
-    <p>This page needs JavaScript to list its contents. Email: nissandutta31 [at] gmail.com</p>
-  </div>
-</noscript>
+{%- if site.data.news.size > 0 %}
+<section>
+  <h2><a href="{{ '/news/' | relative_url }}">News</a></h2>
+  {% include news-list.html limit=site.news_on_home %}
+  {%- if site.data.news.size > site.news_on_home %}
+  <p class="more"><a href="{{ '/news/' | relative_url }}">All news →</a></p>
+  {%- endif %}
+</section>
+{%- endif %}
 
-<script src="content.js"></script>
-<script>
-(function (site) {
-  if (!site) return;
-
-  /* Small helper: make an element, set its text, append children. */
-  function el(tag, className, text) {
-    var node = document.createElement(tag);
-    if (className) node.className = className;
-    if (text) node.textContent = text;
-    return node;
-  }
-
-  function initials(name) {
-    return name.split(/\s+/).map(function (w) { return w.charAt(0); })
-               .join("").slice(0, 2).toUpperCase();
-  }
-
-  /* ---- header: portrait (with monogram fallback), name, rule, tagline ---- */
-  var masthead = document.getElementById("masthead");
-
-  var monogram = el("div", "monogram", initials(site.name));
-  monogram.setAttribute("aria-hidden", "true");
-
-  var portrait = new Image();
-  portrait.className = "portrait";
-  portrait.width = 96;
-  portrait.height = 96;
-  portrait.alt = "Portrait of " + site.name;
-  portrait.onerror = function () { masthead.replaceChild(monogram, portrait); };
-  portrait.src = "assets/portrait.jpg";
-  masthead.appendChild(portrait);
-
-  var titles = el("div");
-  titles.appendChild(el("h1", null, site.name));
-  titles.appendChild(el("hr", "rule"));
-  if (site.tagline) titles.appendChild(el("p", "tagline", site.tagline));
-  masthead.appendChild(titles);
-
-  /* ---- contact line: email assembled here so it isn't sitting in the HTML ---- */
-  var contact = document.getElementById("contact");
-  if (site.email && site.email.length === 2) {
-    var address = site.email[0] + "@" + site.email[1];
-    var mail = el("a", null, address);
-    mail.href = "mailto:" + address;
-    contact.appendChild(mail);
-  }
-  (site.links || []).forEach(function (link) {
-    if (!link.href) return;
-    var a = el("a", null, link.label);
-    a.href = link.href;
-    a.rel = "me noopener";
-    contact.appendChild(a);
-  });
-
-  /* ---- sections ---- */
-  var main = document.getElementById("main");
-
-  function addSection(heading, entries, options) {
-    if (!entries || !entries.length) return;   /* empty list -> no heading either */
-    var opts = options || {};
-    var section = el("section");
-    section.appendChild(el("h2", null, heading));
-
-    var list = el("ul", "entries");
-    entries.forEach(function (item) {
-      var li = el("li", "entry" + (opts.dated ? "" : " entry--nodate"));
-
-      /* Undated entries still get the cell, hidden, so text lines up page-wide. */
-      li.appendChild(el("span", "year", opts.dated ? item.year || "" : "\u00a0"));
-
-      var body = el("div");
-      if (item.href) {
-        var link = el("a", "title", item.title);
-        link.href = item.href;
-        link.rel = "noopener";
-        body.appendChild(link);
-      } else {
-        body.appendChild(el("span", "title", item.title));
-      }
-      if (item.note) body.appendChild(el("p", "note", item.note));
-
-      li.appendChild(body);
-      list.appendChild(li);
-    });
-
-    section.appendChild(list);
-    main.appendChild(section);
-  }
-
-  addSection("Work", site.work, { dated: true });
-  addSection("Now", site.now, { dated: false });
-  addSection("Education", site.education, { dated: true });
-
-  if (site.skills && site.skills.length) {
-    var skills = el("section");
-    skills.appendChild(el("h2", null, "Skills"));
-    skills.appendChild(el("p", "skills", site.skills.join(" · ")));
-    main.appendChild(skills);
-  }
-
-  if (site.lastUpdated) {
-    document.getElementById("footer")
-            .appendChild(el("p", null, "Last updated " + site.lastUpdated + "."));
-  }
-})(window.SITE);
-</script>
-
-</body>
-</html>
+{%- assign featured = site.projects | where: "featured", true %}
+{%- if featured.size > 0 %}
+<section>
+  <h2><a href="{{ '/projects/' | relative_url }}">Selected projects</a></h2>
+  {% include project-list.html featured=true %}
+</section>
+{%- endif %}
