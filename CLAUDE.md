@@ -50,7 +50,8 @@ The repo must be named `<username>.github.io` to serve at the root, and `url:` i
 
 ## Open TODOs (update as they close)
 
-- [ ] GitHub username rename → repo rename → set `url` in `_config.yml`.
+- [ ] Rename repo to `nissan-dutta.github.io` and enable Pages (main, root).
+  Account is `Nissan-Dutta`; `nissan.github.io` is another user's and can't be used.
 - [ ] Add `assets/img/portrait.jpg`.
 - [ ] Rewrite `bio` in `_data/profile.yml` in Nissan's own voice.
 - [ ] Set exact dates on the three seeded entries in `_data/news.yml`.

@@ -7,7 +7,7 @@ title: Nissan Dutta
 description: >-
   Nissan Dutta builds evaluations and tools for language models,
   and the infrastructure they run on.
-url: "https://nissandutta.github.io"
+url: "https://nissan-dutta.github.io"
 baseurl: ""
 lang: en
 theme: null   # no theme gem — every layout lives in this repo
