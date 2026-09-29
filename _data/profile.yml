@@ -1,0 +1,29 @@
+# Who you are. Shown at the top of the home page and in the footer.
+
+name: Nissan Dutta
+
+# One line. Plain language, no job-title soup.
+tagline: I build evaluations and tools for language models, and the infrastructure they run on.
+
+# Home-page bio. Markdown is fine: **bold**, [links](https://…).
+# TODO: rewrite in your own voice — where you are, what you're after, what's next.
+bio: |
+  I work on how language models are measured and how they're run. On the
+  measurement side I built [BanglaBench](/projects/bangla-bench/), a leaderboard
+  that scores models directly in Bengali instead of through translation. On the
+  infrastructure side I ship small, sharp services — containers, Kubernetes
+  manifests, API proxies — that make models easier to use.
+
+# Split so scrapers have to work for it. Joined back together in the browser.
+email: [nissandutta31, gmail.com]
+
+# Order here is the order on the page. Delete or comment out any you don't use.
+links:
+  - { label: GitHub, url: "https://github.com/nissandutta31-maker" }
+  # - { label: Hugging Face, url: "" }
+  # - { label: LinkedIn, url: "" }
+  # - { label: X, url: "" }
+  # - { label: Google Scholar, url: "" }
+
+# Drop a square photo at this path. Until it exists, initials show instead.
+portrait: /assets/img/portrait.jpg

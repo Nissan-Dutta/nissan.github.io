@@ -1,33 +1,37 @@
-# nissandutta31-maker.github.io
+# Nissan Dutta — personal site
 
-My personal site. One page, no build step, no dependencies.
-
-**Live:** https://nissandutta31-maker.github.io/
+About, news, projects, publications and CV. Jekyll, built by GitHub Pages on
+every push. No theme gem, no Node, no Actions.
 
 ## Updating it
 
-Everything on the page comes from [`content.js`](content.js). That's the only file
-to edit.
+All content is in data files. You never need to touch the templates.
 
-- **Add a project** — copy a `{ ... }` block inside `work`, change `year`, `title`
-  and `note`. Add a `href` if it links somewhere; leave it `""` if not.
-- **Remove something** — delete its block. If a list ends up empty, its whole
-  section disappears from the page. No empty headings left behind.
-- **Change the photo** — drop a square image at `assets/portrait.jpg`. Until one is
-  there, the page shows initials in a circle instead.
-- **Every month** — bump `lastUpdated`, which shows in the footer.
-
-Commit, push, and GitHub Pages picks it up in a minute or so.
-
-## Previewing before you push
-
-Open `index.html` in a browser. That's it — it works straight off the filesystem.
-
-## Files
-
-| File | What it is |
+| To change… | Edit |
 | --- | --- |
-| `content.js` | All the text. The file you edit. |
-| `index.html` | Page structure and the small script that renders `content.js`. |
-| `styles.css` | All styling, including dark mode and a print layout. |
-| `assets/` | Images. `portrait.jpg` goes here. |
+| Bio, tagline, links, email | `_data/profile.yml` |
+| News / activities | `_data/news.yml` — add to the top |
+| Projects | `_projects/<name>.md` — one file per project |
+| CV | `_data/cv.yml` — drop a PDF at `assets/cv.pdf` for a download button |
+| Publications | `_data/publications.yml` — the page appears once it has entries |
+| Photo | `assets/img/portrait.jpg` (square). Initials show until it exists. |
+
+Empty lists hide their section entirely, so nothing half-finished shows up live.
+
+With Claude Code: just say *"add news: …"* or *"add project: <repo url>"*.
+`CLAUDE.md` and `.claude/skills/site-update/` hold the conventions.
+
+## Preview locally
+
+```sh
+bundle install
+bundle exec jekyll serve
+```
+Open http://localhost:4000.
+
+## Going live at `<username>.github.io`
+
+1. GitHub → Settings → Account → **Change username** (e.g. `nissandutta`).
+2. Rename this repo to `<username>.github.io`.
+3. Repo → Settings → Pages → *Deploy from a branch* → `main` / `(root)`.
+4. Set `url:` in `_config.yml` to `https://<username>.github.io`.

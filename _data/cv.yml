@@ -1,0 +1,25 @@
+# Everything on /cv/. Any empty list hides its whole section.
+# Put a PDF at assets/cv.pdf and a "Download PDF" link appears automatically.
+
+# Newest first.
+experience: []
+#  - when: 2025 — present
+#    title: Role, Organisation
+#    where: City
+#    note: One line on what you did and what came of it.
+
+education: []
+#  - when: 2023 — 2027
+#    title: Degree, Institution
+#    note: Focus worth naming, thesis, advisor.
+
+awards: []
+#  - when: 2026
+#    title: Award or scholarship
+#    note: Why, in a few words.
+
+# Only what you'd be happy to be asked about in an interview.
+skills:
+  - { group: Languages, items: [Python, Go] }
+  - { group: Infrastructure, items: [Docker, Kubernetes, FastAPI] }
+  - { group: Research, items: [LLM evaluation] }

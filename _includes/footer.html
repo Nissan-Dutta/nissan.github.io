@@ -1,0 +1,10 @@
+{%- assign profile = site.data.profile -%}
+<footer class="site-footer">
+  <p class="contact">
+    <a class="js-email" data-user="{{ profile.email[0] }}" data-domain="{{ profile.email[1] }}" hidden>email</a>
+    {%- for link in profile.links -%}{%- if link.url != "" %}
+    <a href="{{ link.url }}" rel="me noopener">{{ link.label }}</a>
+    {%- endif -%}{%- endfor %}
+  </p>
+  <p>© {{ site.time | date: "%Y" }} {{ profile.name }} · Last updated {{ site.time | date: "%B %Y" }}</p>
+</footer>

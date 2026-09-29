@@ -1,0 +1,16 @@
+{%- comment -%}
+  Renders site.data.news as a date | text table.
+  include.limit  — show only the first N entries (omit for all).
+{%- endcomment -%}
+{%- assign items = site.data.news -%}
+{%- if include.limit -%}{%- assign items = items | slice: 0, include.limit -%}{%- endif -%}
+<table class="news">
+  <tbody>
+  {%- for item in items %}
+    <tr>
+      <th scope="row"><time datetime="{{ item.date | date: '%Y-%m-%d' }}">{{ item.date | date: "%b %-d, %Y" }}</time></th>
+      <td>{{ item.text | markdownify | remove: '<p>' | remove: '</p>' | strip }}</td>
+    </tr>
+  {%- endfor %}
+  </tbody>
+</table>

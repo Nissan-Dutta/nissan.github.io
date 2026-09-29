@@ -1,0 +1,19 @@
+{%- comment -%}
+  Renders projects as dated entries. include.featured — only featured ones.
+{%- endcomment -%}
+{%- assign projects = site.projects | sort: "order" -%}
+{%- if include.featured -%}{%- assign projects = projects | where: "featured", true -%}{%- endif -%}
+<ul class="entries">
+  {%- for p in projects %}
+  <li class="entry">
+    <span class="year">{{ p.year }}</span>
+    <div>
+      <a class="title" href="{{ p.url | relative_url }}">{{ p.title }}</a>
+      <p class="note">{{ p.summary }}</p>
+      {%- if p.tags %}
+      <p class="tags">{% for t in p.tags %}<span>{{ t }}</span>{% endfor %}</p>
+      {%- endif %}
+    </div>
+  </li>
+  {%- endfor %}
+</ul>
