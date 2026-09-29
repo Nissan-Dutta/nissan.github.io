@@ -29,9 +29,15 @@ bundle exec jekyll serve
 ```
 Open http://localhost:4000.
 
-## Going live at `<username>.github.io`
+## Going live at https://nissan-dutta.github.io
 
-1. GitHub → Settings → Account → **Change username** (e.g. `nissandutta`).
-2. Rename this repo to `<username>.github.io`.
-3. Repo → Settings → Pages → *Deploy from a branch* → `main` / `(root)`.
-4. Set `url:` in `_config.yml` to `https://<username>.github.io`.
+GitHub only serves a site at the root of `<username>.github.io`, and the
+username here is `Nissan-Dutta` (`nissan.github.io` belongs to someone else).
+
+1. Rename this repo to `nissan-dutta.github.io` (Settings → General → Repository name).
+2. Merge into `main`.
+3. Settings → Pages → *Deploy from a branch* → `main` / `(root)` → Save.
+4. Wait ~1 minute, then open https://nissan-dutta.github.io.
+
+If the account is ever renamed, repeat step 1 with the new name and update
+`url:` in `_config.yml`.
