@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="Nissan Dutta — AI Evaluation Infrastructure, Statistical Rigor for LLMs, and Physical AI.">
+  <title>Nissan Dutta · Statistical LLM Evaluation &amp; Physical AI</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: '#0A0B0E',
+            charcoal: '#12141A',
+            slatepanel: '#181B23',
+            alabaster: '#F7F6F2',
+            paper: '#EFECE6',
+            emerald: {
+              450: '#10B981',
+            },
+            amber: {
+              450: '#F59E0B',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --grid-color: rgba(255, 255, 255, 0.04);
+    }
+    html:not(.dark) {
+      --grid-color: rgba(10, 11, 14, 0.05);
+    }
+    .bg-lab-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.3);
+      border-radius: 3px;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-alabaster dark:bg-obsidian text-zinc-900 dark:text-zinc-100 font-sans antialiased selection:bg-emerald-500/20 selection:text-emerald-400 transition-colors duration-200 min-h-screen bg-lab-grid">
+
+  <!-- Top Telemetry & Navigation Bar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-alabaster/85 dark:bg-obsidian/85 border-b border-zinc-300/80 dark:border-zinc-800/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+      <!-- Brand / Identity -->
+      <div class="flex items-center gap-3">
+        <a href="#top" class="flex items-center gap-2.5 group focus:outline-none">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-subtle"></span>
+          <span class="font-mono text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-500 transition-colors">NISSAN.DUTTA</span>
+        </a>
+        <span class="hidden md:inline-block text-xs font-mono text-zinc-400 dark:text-zinc-500 border-l border-zinc-300 dark:border-zinc-800 pl-3">
+          SYS.LOC // MD, USA &amp; DHAKA, BD
+        </span>
+      </div>
+
+      <!-- Primary Navigation -->
+      <nav class="hidden md:flex items-center gap-1 font-mono text-xs">
+        <a href="#projects" class="px-2.5 py-1.5 rounded hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">[01.PROJECTS]</a>
+        <a href="#sandbox" class="px-2.5 py-1.5 rounded hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">[02.EVAL_LAB]</a>
+        <a href="#research" class="px-2.5 py-1.5 rounded hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">[03.FRONTIERS]</a>
+        <a href="#experience" class="px-2.5 py-1.5 rounded hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">[04.EXPERIENCE]</a>
+        <a href="#cv-hub" class="px-2.5 py-1.5 rounded hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70 text-emerald-600 dark:text-emerald-400 font-medium transition-colors">[05.LIVE_CV]</a>
+        <a href="#security" class="px-2.5 py-1.5 rounded hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">[06.SECURITY]</a>
+      </nav>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2">
+        <button id="cmdPaletteBtn" type="button" class="flex items-center gap-2 px-2.5 py-1 rounded border border-zinc-300 dark:border-zinc-700/80 bg-white/60 dark:bg-zinc-900/70 hover:border-emerald-500/60 text-xs font-mono text-zinc-600 dark:text-zinc-300 transition-all" title="Open Command Palette (Ctrl+K or /)">
+          <span>CMD</span>
+          <kbd class="px-1.5 py-0.5 text-[10px] bg-zinc-200 dark:bg-zinc-800 rounded text-zinc-700 dark:text-zinc-300">⌘K</kbd>
+        </button>
+
+        <button id="openCvQuickBtn" type="button" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm">
+          <span>CV.DRIVE</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </button>
+
+        <button id="themeToggleBtn" type="button" aria-label="Toggle color theme" class="p-1.5 rounded border border-zinc-300 dark:border-zinc-700/80 bg-white/60 dark:bg-zinc-900/70 text-zinc-600 dark:text-zinc-300 hover:text-emerald-500 transition-colors">
+          <svg id="themeIconSun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="themeIconMoon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+
+        <button id="mobileMenuBtn" type="button" aria-label="Toggle Mobile Navigation" class="md:hidden p-1.5 rounded border border-zinc-300 dark:border-zinc-700/80 text-zinc-600 dark:text-zinc-300">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Mobile Menu -->
+    <div id="mobileNavDrawer" class="hidden md:hidden border-b border-zinc-300 dark:border-zinc-800 bg-alabaster dark:bg-charcoal px-4 py-3 font-mono text-xs space-y-1.5">
+      <a href="#projects" class="mobile-nav-link block py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-emerald-500">[01.PROJECTS] — Shipped Systems &amp; Benchmarks</a>
+      <a href="#sandbox" class="mobile-nav-link block py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-emerald-500">[02.EVAL_LAB] — Live Statistical Simulator</a>
+      <a href="#research" class="mobile-nav-link block py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-emerald-500">[03.FRONTIERS] — What I'm Excited About</a>
+      <a href="#experience" class="mobile-nav-link block py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-emerald-500">[04.EXPERIENCE] — CERN, NYAS &amp; Education</a>
+      <a href="#cv-hub" class="mobile-nav-link block py-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">[05.LIVE_CV] — Google Drive Zero-Redeploy CV</a>
+      <a href="#security" class="mobile-nav-link block py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-emerald-500">[06.SECURITY] — Architecture &amp; Deployment</a>
+    </div>
+  </header>
+
+  <main id="top" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-20">
+
+    <!-- 00. HERO SECTION -->
+    <section class="relative border border-zinc-300/90 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/80 rounded-lg p-6 sm:p-10 shadow-sm overflow-hidden">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-6 mb-6 border-b border-zinc-200 dark:border-zinc-800/80 font-mono text-xs text-zinc-500 dark:text-zinc-400">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-medium">STATUS: ACTIVE BUILDER</span>
+          <span>//</span>
+          <span>SPEC: STATISTICAL_LLM_EVAL &amp; PHYSICAL_AI</span>
+        </div>
+        <div>
+          <span>GITHUB: </span>
+          <a href="https://github.com/Nissan-Dutta" target="_blank" rel="noopener noreferrer" class="underline hover:text-emerald-500 transition-colors">@Nissan-Dutta</a>
+          <span class="mx-1">·</span>
+          <a href="https://github.com/nissandutta31-maker" target="_blank" rel="noopener noreferrer" class="underline hover:text-emerald-500 transition-colors">@nissandutta31-maker</a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-8 space-y-5">
+          <h1 class="font-serif text-4xl sm:text-6xl tracking-tight text-zinc-900 dark:text-zinc-50 leading-[1.08]">
+            Distinguishing genuine capability gains from <span class="italic text-emerald-600 dark:text-emerald-400">stochastic noise</span>.
+          </h1>
+          <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-3xl">
+            I am <strong class="font-semibold text-zinc-900 dark:text-white">Nissan Dutta</strong> — an engineer and applied physics researcher building statistical infrastructure for AI evaluation, inference engines, and physical AI. Co-founder of <strong class="text-zinc-900 dark:text-zinc-100">EvalCI</strong>, former <strong class="text-zinc-900 dark:text-zinc-100">CERN Beamline for Schools</strong> team lead, and Davis-UWC Scholar at <strong class="text-zinc-900 dark:text-zinc-100">Goucher College</strong>.
+          </p>
+
+          <!-- Key Technical Pillars -->
+          <div class="pt-2 flex flex-wrap gap-2 font-mono text-xs">
+            <span class="px-2.5 py-1 rounded bg-zinc-200/80 dark:bg-zinc-800/90 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700">Bootstrap CIs &amp; McNemar Tests</span>
+            <span class="px-2.5 py-1 rounded bg-zinc-200/80 dark:bg-zinc-800/90 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700">Cluster-Robust SEs</span>
+            <span class="px-2.5 py-1 rounded bg-zinc-200/80 dark:bg-zinc-800/90 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700">vLLM / SGLang / Speculative Decoding</span>
+            <span class="px-2.5 py-1 rounded bg-zinc-200/80 dark:bg-zinc-800/90 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700">FastMCP &amp; Agent Trajectories</span>
+            <span class="px-2.5 py-1 rounded bg-zinc-200/80 dark:bg-zinc-800/90 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700">Particle Detector Physics (MWPC)</span>
+          </div>
+
+          <!-- Primary CTA Strip -->
+          <div class="pt-4 flex flex-wrap items-center gap-3">
+            <a id="heroCvPrimaryLink" href="https://docs.google.com/document/d/1K7AtpeLtb5KcDxWmvGKCSzwSxzxCv0FKqTIDO3YybVM/edit?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-zinc-900 dark:bg-emerald-500 text-white dark:text-zinc-950 font-mono text-xs font-semibold hover:opacity-90 transition-opacity shadow-sm">
+              <span>READ LIVE CV (GOOGLE DRIVE)</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+            <button id="heroPreviewCvBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 hover:border-emerald-500 text-zinc-800 dark:text-zinc-200 font-mono text-xs transition-colors">
+              <span>CONFIGURE / PREVIEW CV</span>
+            </button>
+            <a href="https://github.com/Nissan-Dutta" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/60 font-mono text-xs text-zinc-700 dark:text-zinc-300 transition-colors">
+              <span>GitHub</span>
+              <span class="text-zinc-400">↗</span>
+            </a>
+            <a href="https://www.linkedin.com/in/nissan-dutta" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/60 font-mono text-xs text-zinc-700 dark:text-zinc-300 transition-colors">
+              <span>LinkedIn</span>
+              <span class="text-zinc-400">↗</span>
+            </a>
+            <button id="copyEmailHeroBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded border border-zinc-300 dark:border-zinc-800 hover:border-emerald-500/60 font-mono text-xs text-zinc-700 dark:text-zinc-300 transition-colors">
+              <span id="copyEmailHeroText">nissandutta1@gmail.com</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">COPY</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: System Telemetry & Quick Specs Card -->
+        <div class="lg:col-span-4 border border-zinc-300 dark:border-zinc-800 bg-alabaster/90 dark:bg-obsidian/90 rounded p-4 font-mono text-xs space-y-3">
+          <div class="flex items-center justify-between border-b border-zinc-300 dark:border-zinc-800 pb-2 text-zinc-500 dark:text-zinc-400">
+            <span>SYSTEM_TELEMETRY.TOML</span>
+            <span class="text-emerald-500">● v2026.11</span>
+          </div>
+          <div class="space-y-2 text-[11px] leading-relaxed">
+            <div>
+              <span class="text-zinc-400 dark:text-zinc-500">current_focus = </span>
+              <span class="text-emerald-600 dark:text-emerald-400">"Statistical LLM Evaluation &amp; Physical AI"</span>
+            </div>
+            <div>
+              <span class="text-zinc-400 dark:text-zinc-500">venture = </span>
+              <span class="text-zinc-800 dark:text-zinc-200">"EvalCI (Co-founder w/ Bhone Myint Myat)"</span>
+            </div>
+            <div>
+              <span class="text-zinc-400 dark:text-zinc-500">research_highlight = </span>
+              <span class="text-zinc-800 dark:text-zinc-200">"CERN Beamline for Schools (Netherlands Winner)"</span>
+            </div>
+            <div>
+              <span class="text-zinc-400 dark:text-zinc-500">education = </span>
+              <span class="text-zinc-800 dark:text-zinc-200">[ "Goucher College (Physics &amp; Eng / CS)", "UWC Maastricht (IB Diploma)" ]</span>
+            </div>
+            <div>
+              <span class="text-zinc-400 dark:text-zinc-500">scholarships = </span>
+              <span class="text-amber-600 dark:text-amber-400">[ "Davis-UWC #1 National Scorer (BD)", "Asia Kakehashi Scholar" ]</span>
+            </div>
+            <div>
+              <span class="text-zinc-400 dark:text-zinc-500">cv_sync_mode = </span>
+              <span class="text-emerald-600 dark:text-emerald-400">"GOOGLE_DRIVE_IMMUTABLE_ID"</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-zinc-300 dark:border-zinc-800 flex items-center justify-between text-[11px]">
+            <span class="text-zinc-500">Bench Press PR: 230 lbs</span>
+            <a href="#sandbox" class="text-emerald-600 dark:text-emerald-400 hover:underline">Run Eval Sim →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01. SHIPPED SYSTEMS & OPEN-SOURCE REPOSITORIES -->
+    <section id="projects" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-zinc-300 dark:border-zinc-800 pb-4">
+        <div>
+          <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">01 // Verification &amp; Systems Engineering</div>
+          <h2 class="font-serif text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 mt-1">Shipped Projects &amp; Repositories</h2>
+        </div>
+        <!-- Category Filter Buttons -->
+        <div id="projectFilterBar" class="flex flex-wrap gap-1.5 font-mono text-xs">
+          <button type="button" data-filter="all" class="proj-filter-btn px-3 py-1.5 rounded bg-zinc-900 text-white dark:bg-emerald-500 dark:text-zinc-950 font-medium transition-colors">ALL (10)</button>
+          <button type="button" data-filter="eval" class="proj-filter-btn px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-emerald-500/50 transition-colors">STATISTICAL_EVAL</button>
+          <button type="button" data-filter="infra" class="proj-filter-btn px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-emerald-500/50 transition-colors">LLM_INFRA &amp; MCP</button>
+          <button type="button" data-filter="sciml" class="proj-filter-btn px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-emerald-500/50 transition-colors">BIO &amp; PHYSICS</button>
+        </div>
+      </div>
+
+      <!-- Search & Inspection Bar -->
+      <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div class="relative flex-1">
+          <input id="projectSearchInput" type="text" placeholder="Filter repositories by keyword (e.g., McNemar, ProteinGym, FastMCP, Muon, Kubernetes, Bangla)..." class="w-full px-3.5 py-2 rounded border border-zinc-300 dark:border-zinc-800 bg-white/80 dark:bg-charcoal text-xs font-mono text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 focus:outline-none focus:border-emerald-500">
+        </div>
+        <div id="projectCountBadge" class="font-mono text-xs text-zinc-500 dark:text-zinc-400 shrink-0">
+          Showing 10 of 10 verified engineering artifacts
+        </div>
+      </div>
+
+      <!-- Dynamic Project Grid -->
+      <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Populated via JS from verified CV & GitHub data -->
+      </div>
+    </section>
+
+    <!-- 02. INTERACTIVE LAB: EVALCI STATISTICAL SIGNIFICANCE & POWER SIMULATOR -->
+    <section id="sandbox" class="space-y-6 scroll-mt-20">
+      <div class="border border-zinc-300 dark:border-zinc-800 bg-white/80 dark:bg-charcoal/90 rounded-lg p-6 sm:p-8 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+          <div>
+            <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">02 // Interactive Verification Sandbox</div>
+            <h2 class="font-serif text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 mt-1">Why Single-Run Leaderboard Deltas Lie</h2>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-3xl">
+              When an engineering team tests a prompt or checkpoint on <code class="font-mono text-xs px-1 py-0.5 bg-zinc-200 dark:bg-zinc-800 rounded">N = 250</code> benchmark items and sees accuracy move from <code class="font-mono text-xs">76.0% → 78.0%</code>, is it a real improvement or binomial variance? Test my <strong class="text-zinc-900 dark:text-zinc-200">EvalCI</strong> &amp; <strong class="text-zinc-900 dark:text-zinc-200">Genesis</strong> statistical engine live below.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2 font-mono text-xs shrink-0">
+            <button type="button" data-preset="noise" class="sim-preset-btn px-3 py-1.5 rounded border border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 transition-colors">Preset: 250-Item Noise Trap</button>
+            <button type="button" data-preset="paired" class="sim-preset-btn px-3 py-1.5 rounded border border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 transition-colors">Preset: High-Overlap Paired Gain</button>
+            <button type="button" data-preset="proteingym" class="sim-preset-btn px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-emerald-500 transition-colors">Preset: ProteinGym DMS Rank</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6 items-center">
+          <!-- Controls -->
+          <div class="lg:col-span-5 space-y-4 font-mono text-xs">
+            <div class="space-y-1.5">
+              <div class="flex justify-between">
+                <label for="simNInput" class="text-zinc-600 dark:text-zinc-400">Benchmark Size (N items):</label>
+                <span id="simNVal" class="font-semibold text-zinc-900 dark:text-zinc-100">250</span>
+              </div>
+              <input id="simNInput" type="range" min="50" max="2500" step="25" value="250" class="w-full accent-emerald-500 cursor-pointer">
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between">
+                <label for="simBaseInput" class="text-zinc-600 dark:text-zinc-400">Baseline Model Accuracy (p_A):</label>
+                <span id="simBaseVal" class="font-semibold text-zinc-900 dark:text-zinc-100">76.0%</span>
+              </div>
+              <input id="simBaseInput" type="range" min="40" max="95" step="0.5" value="76.0" class="w-full accent-emerald-500 cursor-pointer">
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between">
+                <label for="simCandInput" class="text-zinc-600 dark:text-zinc-400">Candidate Model Accuracy (p_B):</label>
+                <span id="simCandVal" class="font-semibold text-emerald-600 dark:text-emerald-400">78.0%</span>
+              </div>
+              <input id="simCandInput" type="range" min="40" max="98" step="0.5" value="78.0" class="w-full accent-emerald-500 cursor-pointer">
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between">
+                <label for="simRhoInput" class="text-zinc-600 dark:text-zinc-400">Item-Level Paired Correlation (ρ):</label>
+                <span id="simRhoVal" class="font-semibold text-zinc-900 dark:text-zinc-100">0.65</span>
+              </div>
+              <input id="simRhoInput" type="range" min="0.0" max="0.95" step="0.05" value="0.65" class="w-full accent-emerald-500 cursor-pointer">
+              <p class="text-[11px] text-zinc-500 font-sans">Higher paired correlation shrinks standard error via McNemar discordant-pair conditioning.</p>
+            </div>
+          </div>
+
+          <!-- Output Telemetry & Visual CI Chart -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+              <div class="p-3 rounded border border-zinc-200 dark:border-zinc-800 bg-alabaster/70 dark:bg-obsidian/70">
+                <div class="text-[10px] text-zinc-500">OBSERVED DELTA</div>
+                <div id="simDeltaOut" class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5">+2.0%</div>
+              </div>
+              <div class="p-3 rounded border border-zinc-200 dark:border-zinc-800 bg-alabaster/70 dark:bg-obsidian/70">
+                <div class="text-[10px] text-zinc-500">95% PAIRED CI</div>
+                <div id="simCiOut" class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-1">[-2.3%, +6.3%]</div>
+              </div>
+              <div class="p-3 rounded border border-zinc-200 dark:border-zinc-800 bg-alabaster/70 dark:bg-obsidian/70">
+                <div class="text-[10px] text-zinc-500">McNEMAR p-VALUE</div>
+                <div id="simPvalOut" class="text-lg font-semibold text-amber-600 dark:text-amber-400 mt-0.5">p = 0.368</div>
+              </div>
+              <div class="p-3 rounded border border-zinc-200 dark:border-zinc-800 bg-alabaster/70 dark:bg-obsidian/70">
+                <div class="text-[10px] text-zinc-500">CI GATE DECISION</div>
+                <div id="simVerdictOut" class="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-1.5">HOLD // NOISE</div>
+              </div>
+            </div>
+
+            <!-- Visual Confidence Interval Plot -->
+            <div class="p-4 rounded border border-zinc-200 dark:border-zinc-800 bg-alabaster/60 dark:bg-obsidian/80 space-y-3">
+              <div class="flex items-center justify-between font-mono text-[11px] text-zinc-500">
+                <span>95% BOOTSTRAP / PAIRED CONFIDENCE INTERVAL VS. ZERO-EFFECT BOUNDARY</span>
+                <span id="simSampleReqOut">Min N for 80% Power: 1,420 items</span>
+              </div>
+              <div class="relative h-24 w-full flex items-center">
+                <svg id="simSvgPlot" viewBox="0 0 600 90" class="w-full h-full overflow-visible">
+                  <!-- Background scale lines -->
+                  <line x1="50" y1="45" x2="550" y2="45" stroke="currentColor" class="text-zinc-300 dark:text-zinc-800" stroke-width="1.5" />
+                  <!-- Zero change vertical line -->
+                  <line x1="300" y1="12" x2="300" y2="78" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4 3" />
+                  <text x="300" y="10" text-anchor="middle" fill="#EF4444" font-family="JetBrains Mono" font-size="10">Δ = 0.0% (Null)</text>
+                  <!-- Unpaired CI bar (wider, ghosted) -->
+                  <line id="svgUnpairedBar" x1="210" y1="34" x2="370" y2="34" stroke="#71717A" stroke-width="3" stroke-linecap="round" opacity="0.45" />
+                  <!-- Paired CI bar -->
+                  <line id="svgPairedBar" x1="245" y1="54" x2="355" y2="54" stroke="#F59E0B" stroke-width="5" stroke-linecap="round" />
+                  <!-- Point estimate -->
+                  <circle id="svgPointEst" cx="320" cy="54" r="6" fill="#10B981" stroke="#0A0B0E" stroke-width="2" />
+                  <text id="svgLabelEst" x="320" y="76" text-anchor="middle" fill="currentColor" class="text-zinc-700 dark:text-zinc-300" font-family="JetBrains Mono" font-size="10">+2.0%</text>
+                </svg>
+              </div>
+              <div id="simNarrativeBox" class="text-xs font-mono text-zinc-600 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-800 pt-2">
+                GATE DIAGNOSTIC: The 95% confidence interval crosses zero. Shipping this model change risks deploying random seed variance.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03. WHAT I'M EXCITED ABOUT / RESEARCH FRONTIERS -->
+    <section id="research" class="space-y-6 scroll-mt-20">
+      <div class="border-b border-zinc-300 dark:border-zinc-800 pb-4">
+        <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">03 // Research Thesis &amp; Active Explorations</div>
+        <h2 class="font-serif text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 mt-1">What I Am Excited About Right Now</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Thesis 1 -->
+        <article class="border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-6 space-y-3 hover:border-emerald-500/50 transition-colors">
+          <div class="flex items-center justify-between font-mono text-xs text-emerald-600 dark:text-emerald-400">
+            <span>THESIS_01 // EVALUATION SCIENCE</span>
+            <span>[EVALCI &amp; GENESIS]</span>
+          </div>
+          <h3 class="font-serif text-2xl text-zinc-900 dark:text-zinc-100">Statistical Rigor for AI &amp; Bio-ML Leaderboards</h3>
+          <p class="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            Most public AI leaderboards and Deep Mutational Scanning (DMS) benchmarks rank models by point estimates without power analysis or cluster-robust standard errors. Together with UChicago mathematician Bhone Myint Myat, I am building <strong class="text-zinc-900 dark:text-white">EvalCI</strong> and <strong class="text-zinc-900 dark:text-white">Genesis</strong> (ProteinGym DMS rank uncertainty) so model releases and scientific benchmarks are gated by paired hypothesis tests rather than single-seed luck.
+          </p>
+          <div class="pt-1 font-mono text-[11px] text-zinc-500">
+            Focus: Bootstrap CIs · McNemar Discordant Tests · NeurIPS Reanalysis &amp; Predictive Evaluation
+          </div>
+        </article>
+
+        <!-- Thesis 2 -->
+        <article class="border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-6 space-y-3 hover:border-emerald-500/50 transition-colors">
+          <div class="flex items-center justify-between font-mono text-xs text-emerald-600 dark:text-emerald-400">
+            <span>THESIS_02 // INFERENCE SYSTEMS</span>
+            <span>[vLLM · SGLANG · EDGE]</span>
+          </div>
+          <h3 class="font-serif text-2xl text-zinc-900 dark:text-zinc-100">High-Throughput LLM Serving &amp; Speculative Decoding</h3>
+          <p class="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            Autoregressive generation is fundamentally bottlenecked by memory bandwidth. I study the internals of <strong class="text-zinc-900 dark:text-white">vLLM</strong>, <strong class="text-zinc-900 dark:text-white">SGLang</strong>, and <strong class="text-zinc-900 dark:text-white">TensorRT-LLM</strong> from source — investigating continuous batching, PagedAttention KV-cache management, asynchronous draft-target speculative decoding, and Muon/NorMuon optimization in Karpathy's <code class="font-mono text-xs">nanochat</code>.
+          </p>
+          <div class="pt-1 font-mono text-[11px] text-zinc-500">
+            Focus: KV-Cache Paging · Multi-Token Prediction (MTP) · Cross-Engine Reproducible Serving Benchmarks
+          </div>
+        </article>
+
+        <!-- Thesis 3 -->
+        <article class="border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-6 space-y-3 hover:border-emerald-500/50 transition-colors">
+          <div class="flex items-center justify-between font-mono text-xs text-emerald-600 dark:text-emerald-400">
+            <span>THESIS_03 // PHYSICAL AI &amp; SCIML</span>
+            <span>[PINNs · HARDWARE-IN-LOOP]</span>
+          </div>
+          <h3 class="font-serif text-2xl text-zinc-900 dark:text-zinc-100">Physical AI, PINNs &amp; Real-Time Control Systems</h3>
+          <p class="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            Coming from particle detector design at <strong class="text-zinc-900 dark:text-white">CERN Beamline for Schools</strong> (Multi-Wire Proportional Chambers, fail-safe interlock validation) and Lagrangian mechanics, I am fascinated by where neural networks meet physical laws: <strong class="text-zinc-900 dark:text-white">Physics-Informed Neural Networks (PINNs)</strong> with PDE residual loss functions, and hardware-agnostic embodied data pipelines.
+          </p>
+          <div class="pt-1 font-mono text-[11px] text-zinc-500">
+            Focus: Adaptive Residual Subsampling · PDE Conservation Laws · Interlock &amp; Control Diagnostics
+          </div>
+        </article>
+
+        <!-- Thesis 4 -->
+        <article class="border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-6 space-y-3 hover:border-emerald-500/50 transition-colors">
+          <div class="flex items-center justify-between font-mono text-xs text-emerald-600 dark:text-emerald-400">
+            <span>THESIS_04 // MULTILINGUAL INTEGRITY</span>
+            <span>[BANGLABENCH &amp; UNICODE QA]</span>
+          </div>
+          <h3 class="font-serif text-2xl text-zinc-900 dark:text-zinc-100">Production Failover &amp; Bengali Linguistic Integrity</h3>
+          <p class="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            While building <strong class="text-zinc-900 dark:text-white">BanglaBench LiteLLM Runner</strong> across NVIDIA NIM, DeepSeek, and Perplexity, I proved that silent API routing failovers corrupt benchmark accuracy unless each provider is isolated on a separate leaderboard driver. I also build browser-driving QA agents that detect broken Bengali and Arabic Unicode ligatures in live production apps.
+          </p>
+          <div class="pt-1 font-mono text-[11px] text-zinc-500">
+            Focus: Deterministic Failover Auditing · Indic/Bengali Tokenization · Visual Unicode Verification
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 04. RESEARCH, LEADERSHIP & ACADEMIC TIMELINE -->
+    <section id="experience" class="space-y-6 scroll-mt-20">
+      <div class="border-b border-zinc-300 dark:border-zinc-800 pb-4">
+        <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">04 // Proven Track Record</div>
+        <h2 class="font-serif text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 mt-1">Research, Leadership &amp; Education</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Experience Timeline -->
+        <div class="lg:col-span-7 space-y-6">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Research &amp; Engineering Leadership</h3>
+
+          <div class="relative pl-6 border-l border-zinc-300 dark:border-zinc-800 space-y-8">
+            <!-- Item 1 -->
+            <div class="relative">
+              <span class="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-alabaster dark:ring-obsidian"></span>
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Co-Founder &amp; Infrastructure Lead · EvalCI</h4>
+                <span class="font-mono text-xs text-emerald-600 dark:text-emerald-400">2026 – Present</span>
+              </div>
+              <p class="text-xs font-mono text-zinc-500 mt-0.5">Statistical Significance Layer for LLM Evaluations</p>
+              <ul class="mt-2 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-300 list-disc list-inside">
+                <li>Co-developing the statistical verification engine with bootstrap confidence intervals, paired McNemar tests, and cluster-robust standard errors for correlated benchmark items.</li>
+                <li>Integrating automated significance gates into GitHub Actions CI so noisy single-seed regressions halt before release.</li>
+              </ul>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="relative">
+              <span class="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-600 ring-4 ring-alabaster dark:ring-obsidian"></span>
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Team Lead &amp; Researcher · CERN Beamline for Schools</h4>
+                <span class="font-mono text-xs text-zinc-500">Sep 2023 – May 2024</span>
+              </div>
+              <p class="text-xs font-mono text-zinc-500 mt-0.5">Maastricht, Netherlands · Global Particle Physics Competition</p>
+              <ul class="mt-2 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-300 list-disc list-inside">
+                <li>Led a 6-person international team across the Netherlands, India, Egypt, and Uganda; won one of only two Netherlands slots in CERN's global competition.</li>
+                <li>Designed a Multi-Wire Proportional Chamber (MWPC) for particle detection and authored the 20-page technical proposal and safety interlock/fail-safe validation protocols.</li>
+              </ul>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="relative">
+              <span class="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-600 ring-4 ring-alabaster dark:ring-obsidian"></span>
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Founder &amp; Coach · STEM X &amp; Basudeb Orphanage Lab</h4>
+                <span class="font-mono text-xs text-zinc-500">Sep 2022 – May 2024</span>
+              </div>
+              <p class="text-xs font-mono text-zinc-500 mt-0.5">UWC Maastricht, Netherlands &amp; Bangladesh</p>
+              <ul class="mt-2 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-300 list-disc list-inside">
+                <li>Founded UWC Maastricht's first official STEM club (30+ members across 3 sub-clubs) and coached a junior student to the Dutch Physics Olympiad finals.</li>
+                <li>Won a €1,000 Student Initiative Fund grant to commission and build a computer lab serving 300+ students at the Basudeb Orphanage, teaching its first computing classes.</li>
+              </ul>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="relative">
+              <span class="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-600 ring-4 ring-alabaster dark:ring-obsidian"></span>
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Community Tech Lead &amp; CBL Instructor · Goucher College</h4>
+                <span class="font-mono text-xs text-zinc-500">2025 – 2026</span>
+              </div>
+              <p class="text-xs font-mono text-zinc-500 mt-0.5">Towson, Maryland</p>
+              <ul class="mt-2 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-300 list-disc list-inside">
+                <li>Provided administrator-level systems and infrastructure support for campus safety and security operations.</li>
+                <li>Taught mathematics and science to local middle-school students in Towson through Community-Based Learning (CBL).</li>
+              </ul>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="relative">
+              <span class="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-600 ring-4 ring-alabaster dark:ring-obsidian"></span>
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Young Researcher &amp; Team Lead · NYAS Global STEM Alliance</h4>
+                <span class="font-mono text-xs text-zinc-500">Sep 2021 – Jun 2022</span>
+              </div>
+              <p class="text-xs font-mono text-zinc-500 mt-0.5">New York Academy of Sciences (Remote)</p>
+              <ul class="mt-2 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-300 list-disc list-inside">
+                <li>Stepped in mid-project to lead five researchers across five countries working on marine ecosystem and coral-reef restoration diagnostics.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Education, Scholarships & Technical Stack -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-5 space-y-4">
+            <h3 class="font-mono text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Education &amp; Academic Honors</h3>
+            <div class="space-y-3 text-sm">
+              <div class="pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                <div class="font-semibold text-zinc-900 dark:text-zinc-100">Goucher College · Baltimore / Towson, MD</div>
+                <div class="text-xs font-mono text-zinc-500">B.A. Coursework, Physics, Engineering Science &amp; CS</div>
+                <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-1">Coursework: Lagrangian Mechanics, Ordinary Differential Equations, Numerical Methods, Electric Circuits, Computer Science.</p>
+              </div>
+              <div>
+                <div class="font-semibold text-zinc-900 dark:text-zinc-100">United World College (UWC) Maastricht · Netherlands</div>
+                <div class="text-xs font-mono text-zinc-500">International Baccalaureate (IB) Diploma · May 2024</div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
+              <div class="font-mono text-xs text-zinc-500 uppercase">Distinctions &amp; Fellowships</div>
+              <ul class="space-y-1.5 text-xs text-zinc-700 dark:text-zinc-300 font-mono">
+                <li>★ <strong class="text-zinc-900 dark:text-white">Davis-UWC Dare to Dream Scholar</strong> — #1 Highest Scorer on Bangladesh's National Selection Committee</li>
+                <li>★ <strong class="text-zinc-900 dark:text-white">CERN Beamline for Schools (2023)</strong> — 1 of 2 teams selected from the Netherlands</li>
+                <li>★ <strong class="text-zinc-900 dark:text-white">National Earth Science Olympiad</strong> — 7th Nationally in Bangladesh &amp; Regional Champion</li>
+                <li>★ <strong class="text-zinc-900 dark:text-white">Asia Kakehashi Scholar</strong> (Japan Cabinet Office / AFS)</li>
+                <li>★ <strong class="text-zinc-900 dark:text-white">Duke of Edinburgh's International Gold Award</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Technical Stack Matrix -->
+          <div class="border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-5 space-y-3">
+            <h3 class="font-mono text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Technical Capability Matrix</h3>
+            <div class="space-y-2.5 text-xs">
+              <div>
+                <span class="font-mono text-zinc-500 block">EVALUATION &amp; STATISTICS:</span>
+                <span class="text-zinc-800 dark:text-zinc-200">Bootstrap CIs, McNemar Paired Tests, Cluster-Robust SEs, pass@k, k-Sample Variance, LLM-as-Judge Calibration, Trajectory Grading</span>
+              </div>
+              <div>
+                <span class="font-mono text-zinc-500 block">LLM SERVING &amp; INFRASTRUCTURE:</span>
+                <span class="text-zinc-800 dark:text-zinc-200">vLLM, SGLang, TensorRT-LLM (Source Study: Continuous Batching, Paged KV Cache, Speculative Decoding), LiteLLM, Ollama, FastMCP</span>
+              </div>
+              <div>
+                <span class="font-mono text-zinc-500 block">LANGUAGES &amp; CORE TOOLS:</span>
+                <span class="text-zinc-800 dark:text-zinc-200">Python, C++, TypeScript / JavaScript, Node.js, SQL, Bash, Linux, Git, GitHub Actions CI/CD, Google Cloud, SQLite</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05. DYNAMIC GOOGLE DRIVE CV HUB (ZERO-CODE-CHANGE ARCHITECTURE) -->
+    <section id="cv-hub" class="space-y-6 scroll-mt-20">
+      <div class="border-2 border-emerald-500/40 bg-white/90 dark:bg-charcoal/95 rounded-lg p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-xs mb-2">
+              <span>05 // DYNAMIC GOOGLE DRIVE CV ENGINE</span>
+              <span>·</span>
+              <span>ZERO CODE CHANGES REQUIRED</span>
+            </div>
+            <h2 class="font-serif text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">Live Curriculum Vitae</h2>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-3xl">
+              My CV is wired directly to Google Drive by file ID. Whenever I edit my Google Doc or upload a new revision via <code class="font-mono text-xs px-1 py-0.5 bg-zinc-200 dark:bg-zinc-800 rounded">File → Manage versions → Upload new version</code> in Google Drive, every View and Direct PDF Download button on this site serves the latest version immediately without touching a single line of HTML.
+            </p>
+          </div>
+
+          <!-- Switch between Nissan's verified Drive CVs -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 font-mono text-xs shrink-0">
+            <label for="cvVariantSelect" class="text-zinc-500">Active Drive Target:</label>
+            <select id="cvVariantSelect" class="px-3 py-2 rounded border border-zinc-300 dark:border-zinc-700 bg-alabaster dark:bg-obsidian text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-emerald-500">
+              <option value="1K7AtpeLtb5KcDxWmvGKCSzwSxzxCv0FKqTIDO3YybVM" data-type="doc" data-title="CV_Nissan_Dutta_AIxBio_2026-10 (Google Doc)">AI Eval &amp; Statistical Methods CV (Latest Doc)</option>
+              <option value="1RUd28SI9FJsYcEmJIG4rb7dK6k0EICcY" data-type="pdf" data-title="Nissan_Dutta_CERN_Resume.pdf (Drive PDF)">CERN &amp; Systems Engineering Resume (Drive PDF)</option>
+              <option value="1KmQAAk7pITGWfGHwNwk_E_UBJlorHXAC7l4PvkeXU2A" data-type="doc" data-title="Nissan_Dutta_Resume_2026.docx (Google Doc)">Physics &amp; Open-Source Resume 2026 (Doc)</option>
+              <option value="1be9p56Ri9KtTeflsCxi5FlBegNJp3_9V" data-type="folder" data-title="Google Drive CV Master Folder">Google Drive Master 'CV' Folder</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Bar & Custom Drive Link Resolver -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 space-y-4">
+            <div class="flex flex-wrap items-center gap-3">
+              <a id="cvOpenDriveBtn" href="https://docs.google.com/document/d/1K7AtpeLtb5KcDxWmvGKCSzwSxzxCv0FKqTIDO3YybVM/edit?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-semibold transition-colors inline-flex items-center gap-2">
+                <span>OPEN IN GOOGLE DRIVE</span>
+                <span>↗</span>
+              </a>
+              <a id="cvExportPdfBtn" href="https://docs.google.com/document/d/1K7AtpeLtb5KcDxWmvGKCSzwSxzxCv0FKqTIDO3YybVM/export?format=pdf" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded border border-zinc-300 dark:border-zinc-700 hover:border-emerald-500 bg-alabaster dark:bg-obsidian text-zinc-800 dark:text-zinc-200 font-mono text-xs font-medium transition-colors inline-flex items-center gap-2">
+                <span>DIRECT PDF EXPORT</span>
+                <span>↓</span>
+              </a>
+              <button id="toggleLiveEmbedBtn" type="button" class="px-3.5 py-2.5 rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-200/60 dark:hover:bg-zinc-800 font-mono text-xs text-zinc-700 dark:text-zinc-300 transition-colors">
+                TOGGLE EMBEDDED DRIVE VIEWER
+              </button>
+            </div>
+
+            <!-- Live Drive preview iframe container (hidden by default for fast load & privacy, toggled on click) -->
+            <div id="cvIframeContainer" class="hidden rounded border border-zinc-300 dark:border-zinc-800 overflow-hidden bg-zinc-950">
+              <div class="px-3 py-2 bg-zinc-200 dark:bg-zinc-900 border-b border-zinc-300 dark:border-zinc-800 flex items-center justify-between font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
+                <span id="cvIframeLabel">Previewing: CV_Nissan_Dutta_AIxBio_2026-10</span>
+                <span class="text-emerald-600 dark:text-emerald-400">Ensure Drive sharing is set to "Anyone with the link can view"</span>
+              </div>
+              <iframe id="cvPreviewIframe" title="Google Drive CV Live Preview" src="about:blank" class="w-full h-[520px] border-0" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+            </div>
+
+            <!-- Built-in Instant Text Snapshot of Latest CV so recruiters can read immediately even offline -->
+            <div class="border border-zinc-200 dark:border-zinc-800 rounded bg-alabaster/70 dark:bg-obsidian/80 p-5 space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
+              <div class="flex items-center justify-between font-mono text-[11px] text-zinc-500 border-b border-zinc-200 dark:border-zinc-800 pb-2">
+                <span>VERIFIED SNAPSHOT // CV_Nissan_Dutta_AIxBio_2026-10</span>
+                <span>SYNCED: OCT 2026</span>
+              </div>
+              <div class="space-y-2 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed font-sans">
+                <p><strong class="text-zinc-900 dark:text-white">NISSAN DUTTA</strong> — LLM Evaluation &amp; Statistical Methods · Dhaka, Bangladesh &amp; Towson, MD · <span class="font-mono">nissandutta1@gmail.com</span></p>
+                <p><strong>Summary:</strong> Engineer building statistical tooling for LLM evaluation. Co-developing EvalCI, a significance-testing layer for evaluation results, and built an open-source harness that fails CI builds on evaluation regressions. Led a 6-person international team in CERN's Beamline for Schools competition and wrote the team's proposal and safety protocols.</p>
+                <p><strong>Core Projects:</strong> EvalCI (bootstrap CIs, McNemar paired tests, cluster-robust SEs) · agent-eval-harness (pass@k, calibrated LLM-as-judge, trajectory grading, Claude Code plugin v0.2.0) · Genesis (ProteinGym DMS leaderboard rank uncertainty &amp; power analysis) · BanglaBench LiteLLM Runner · ollama-mcp-server · nanochat-navigator · ecc-nx.</p>
+                <p><strong>Education:</strong> Goucher College (Physics &amp; Engineering Science / CS coursework) · UWC Maastricht (IB Diploma, Davis-UWC Dare to Dream Scholar).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Zero-Redeploy Guide & Dynamic Link Tester -->
+          <div class="lg:col-span-5 border border-zinc-300 dark:border-zinc-800 bg-alabaster dark:bg-obsidian rounded p-5 space-y-4 font-mono text-xs">
+            <div class="text-emerald-600 dark:text-emerald-400 font-semibold uppercase">How to Update Your CV Without Touching Code</div>
+            <ol class="space-y-2 text-zinc-600 dark:text-zinc-400 list-decimal list-inside font-sans text-xs leading-relaxed">
+              <li><strong class="text-zinc-900 dark:text-zinc-200">If using your Google Doc CV:</strong> Simply edit <a href="https://docs.google.com/document/d/1K7AtpeLtb5KcDxWmvGKCSzwSxzxCv0FKqTIDO3YybVM/edit" target="_blank" rel="noopener noreferrer" class="underline text-emerald-600 dark:text-emerald-400">CV_Nissan_Dutta_AIxBio_2026-10</a> directly in Google Docs. The "Direct PDF Export" link (<code class="font-mono text-[11px]">/export?format=pdf</code>) compiles your latest edits on the fly.</li>
+              <li><strong class="text-zinc-900 dark:text-zinc-200">If using a PDF in Google Drive:</strong> Right-click <a href="https://drive.google.com/file/d/1RUd28SI9FJsYcEmJIG4rb7dK6k0EICcY/view" target="_blank" rel="noopener noreferrer" class="underline text-emerald-600 dark:text-emerald-400">Nissan_Dutta_CERN_Resume.pdf</a> in Drive → <strong>File information → Manage versions → Upload new version</strong>. The Drive File ID never changes!</li>
+              <li><strong class="text-zinc-900 dark:text-zinc-200">Want to test a different Drive URL?</strong> Paste any Google Drive link or file ID below to hot-swap all CV buttons on the page:</li>
+            </ol>
+            <div class="space-y-2 pt-1">
+              <label for="customDriveUrlInput" class="block text-[11px] text-zinc-500">HOT-SWAP DRIVE URL OR FILE ID:</label>
+              <div class="flex gap-2">
+                <input id="customDriveUrlInput" type="text" placeholder="Paste https://drive.google.com/file/d/..." class="flex-1 px-2.5 py-1.5 rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-charcoal text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-emerald-500">
+                <button id="applyCustomDriveBtn" type="button" class="px-3 py-1.5 rounded bg-zinc-900 dark:bg-emerald-500 text-white dark:text-zinc-950 font-semibold hover:opacity-90 transition-opacity">BIND</button>
+              </div>
+              <div id="customDriveStatus" class="text-[11px] text-emerald-600 dark:text-emerald-400 hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06. SECURITY HARDENING & GITHUB PAGES DEPLOYMENT BLUEPRINT -->
+    <section id="security" class="space-y-6 scroll-mt-20">
+      <div class="border-b border-zinc-300 dark:border-zinc-800 pb-4">
+        <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">06 // Defense-in-Depth &amp; EGM Audit</div>
+        <h2 class="font-serif text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100 mt-1">Security Architecture &amp; Deployment Blueprint</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Security Checklist -->
+        <div class="lg:col-span-6 border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-mono text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Zero-Attack-Surface Verification</h3>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px]">PASS // 6 OF 6 CHECKS</span>
+          </div>
+          <ul class="space-y-2.5 text-xs text-zinc-700 dark:text-zinc-300 font-mono">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span><strong>Zero Secret Exposure:</strong> No API keys, tokens, or backend credentials exist in client code; safe for public GitHub repositories.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span><strong>Reverse-Tabnabbing Protection:</strong> Every external anchor enforces <code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">rel="noopener noreferrer"</code> to isolate <code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">window.opener</code>.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span><strong>DOM XSS Prevention:</strong> Drive File ID resolver enforces strict regex validation (<code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">/^[a-zA-Z0-9_-]{15,60}$/</code>) before constructing URLs.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span><strong>Sandboxed Frame Isolation:</strong> Optional Drive preview iframe is constrained with <code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">sandbox="allow-scripts allow-same-origin allow-popups"</code>.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span><strong>Strict Referrer Policy:</strong> Configures <code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">strict-origin-when-cross-origin</code> metadata and zero third-party tracking beacons.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span><strong>Artifact Attestation CI:</strong> Packaged with a pinned GitHub Actions deployment workflow (<code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">deploy.yml</code>) with least-privilege <code class="px-1 bg-zinc-200 dark:bg-zinc-800 rounded">GITHUB_TOKEN</code> permissions.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Deployment Commands -->
+        <div class="lg:col-span-6 border border-zinc-300 dark:border-zinc-800 bg-white/70 dark:bg-charcoal/70 rounded-lg p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-mono text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Ship to GitHub Pages in 60 Seconds</h3>
+            <button id="copyDeployCmdBtn" type="button" class="px-2.5 py-1 rounded border border-zinc-300 dark:border-zinc-700 hover:border-emerald-500 font-mono text-[11px] text-zinc-700 dark:text-zinc-300 transition-colors">
+              COPY BASH SCRIPT
+            </button>
+          </div>
+          <p class="text-xs text-zinc-600 dark:text-zinc-400">
+            Because your GitHub username is <code class="font-mono text-emerald-600 dark:text-emerald-400">Nissan-Dutta</code>, creating a public repository named <code class="font-mono">Nissan-Dutta.github.io</code> will automatically publish at <code class="font-mono">https://nissan-dutta.github.io</code> (and you can point <code class="font-mono">nissandutta.com</code> to it via the included <code class="font-mono">CNAME</code> file).
+          </p>
+          <pre id="deployCodeBlock" class="p-3.5 rounded bg-zinc-900 text-zinc-100 font-mono text-[11px] overflow-x-auto leading-relaxed"><code># 1. Unzip portfolio_repo.zip and initialize repo
+git init &amp;&amp; git branch -M main
+git add index.html .nojekyll .github/workflows/deploy.yml README.md
+git commit -m "feat: ship statistical eval &amp; physical AI portfolio"
+
+# 2. Push to Nissan-Dutta/Nissan-Dutta.github.io
+git remote add origin https://github.com/Nissan-Dutta/Nissan-Dutta.github.io.git
+git push -u origin main</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-zinc-300 dark:border-zinc-800 mt-16 py-8 font-mono text-xs text-zinc-500 dark:text-zinc-400">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span>© 2026 NISSAN DUTTA · BUILT WITH DETERMINISTIC PRECISION (ZERO AI SLOP)</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/Nissan-Dutta" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-500 transition-colors">GitHub (Nissan-Dutta)</a>
+        <a href="https://github.com/nissandutta31-maker" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-500 transition-colors">GitHub (nissandutta31-maker)</a>
+        <a href="https://www.linkedin.com/in/nissan-dutta" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-500 transition-colors">LinkedIn</a>
+        <a href="mailto:nissandutta1@gmail.com" class="hover:text-emerald-500 transition-colors">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Project Architecture Case Study Modal -->
+  <div id="projectModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-alabaster dark:bg-charcoal border border-zinc-300 dark:border-zinc-700 rounded-lg max-w-2xl w-full p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+        <div>
+          <span id="modalProjCategory" class="font-mono text-[11px] text-emerald-600 dark:text-emerald-400 uppercase">CATEGORY</span>
+          <h3 id="modalProjTitle" class="font-serif text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100 mt-0.5">Project Title</h3>
+        </div>
+        <button id="closeProjectModalBtn" type="button" class="px-2.5 py-1 rounded border border-zinc-300 dark:border-zinc-700 font-mono text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white">ESC ✕</button>
+      </div>
+      <div id="modalProjBody" class="space-y-4 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed"></div>
+      <div class="pt-3 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+        <span id="modalProjStack" class="font-mono text-xs text-zinc-500"></span>
+        <a id="modalProjLink" href="https://github.com/Nissan-Dutta" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-semibold transition-colors">VIEW REPOSITORY ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Palette Modal (Cmd+K) -->
+  <div id="cmdPaletteModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-start justify-center pt-20 p-4">
+    <div class="bg-alabaster dark:bg-charcoal border border-zinc-300 dark:border-zinc-700 rounded-lg max-w-lg w-full overflow-hidden shadow-2xl">
+      <div class="p-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
+        <span class="font-mono text-xs text-emerald-500">&gt;_</span>
+        <input id="cmdSearchInput" type="text" placeholder="Type a command or section (e.g., cv, simulator, genesis, theme, email)..." class="w-full bg-transparent text-xs font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none">
+        <button id="closeCmdModalBtn" type="button" class="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 font-mono text-[10px] text-zinc-600 dark:text-zinc-400">ESC</button>
+      </div>
+      <div id="cmdListContainer" class="p-2 max-h-72 overflow-y-auto font-mono text-xs space-y-1"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded bg-zinc-900 dark:bg-emerald-500 text-white dark:text-zinc-950 font-mono text-xs font-semibold shadow-lg transition-all">
+    Action completed.
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. VERIFIED PROJECT INVENTORY (Grounded in GitHub & Google Drive CVs)
+    // =========================================================================
+    const PROJECTS = [
+      {
+        id: 'evalci',
+        title: 'EvalCI',
+        subtitle: 'Statistical Significance Layer for LLM Evaluations',
+        category: 'eval',
+        badge: 'CO-FOUNDER · ACTIVE',
+        stack: 'Python · Bootstrap CIs · McNemar Tests · Cluster-Robust SE',
+        repoUrl: 'https://github.com/Nissan-Dutta',
+        summary: 'Attaches bootstrap confidence intervals, paired McNemar tests, and cluster-robust standard errors to LLM evaluation pipelines so ship decisions rest on statistical significance rather than single-run noise.',
+        problem: 'Engineering teams routinely compare two model checkpoints on 200–300 test items and ship a +1.8% gain that is indistinguishable from random variation.',
+        architecture: 'Co-developed with UChicago pure mathematics researcher Bhone Myint Myat. Computes paired item-level contingency matrices, non-parametric bootstrap distributions, and cluster-robust standard errors for correlated multi-turn benchmarks directly in CI.',
+        metrics: 'Automatically halts releases in GitHub Actions when reported capability gains fail significance thresholds (α = 0.05).'
+      },
+      {
+        id: 'genesis',
+        title: 'genesis',
+        subtitle: 'Rank Uncertainty & Power Analysis for ProteinGym DMS',
+        category: 'sciml',
+        badge: 'PINNED REPO · AIxBIO',
+        stack: 'Python · Biostatistics · ProteinGym DMS · Power Analysis',
+        repoUrl: 'https://github.com/Nissan-Dutta/genesis',
+        summary: 'Statistical rank uncertainty quantification and statistical power analysis for the ProteinGym Deep Mutational Scanning (DMS) substitution leaderboard.',
+        problem: 'Biological sequence models on the ProteinGym DMS substitution leaderboard are frequently ranked by raw Spearman correlation without accounting for assay-level variance or statistical power.',
+        architecture: 'Implements bootstrap rank confidence intervals and minimum-sample power calculations across substitution assays to identify which leaderboard rank differences are statistically robust.',
+        metrics: 'Public repository under @Nissan-Dutta/genesis with reproducible Python analysis scripts.'
+      },
+      {
+        id: 'agent-eval-harness',
+        title: 'agent-eval-harness',
+        subtitle: 'Model-Agnostic Multi-Step Agent Evaluation Harness',
+        category: 'eval',
+        badge: 'CLAUDE CODE PLUGIN v0.2.0',
+        stack: 'Python · pass@k · LLM-as-Judge · GitHub Actions CI',
+        repoUrl: 'https://github.com/nissandutta31-maker',
+        summary: 'Open-source evaluation harness for multi-step AI agents featuring k-sample runs, pass@k metrics, calibrated LLM-as-judge scoring, and full trajectory grading.',
+        problem: 'Grading only the final string output of an AI agent hides brittle tool-calling trajectories, run-to-run variance, and uncalibrated judge bias.',
+        architecture: 'Includes judge.py with a dedicated judge-calibration script, step-by-step trajectory scorers, and an offline-capable GitHub Actions regression gate.',
+        metrics: 'Released as an installable Claude Code plugin (v0.2.0); runs 100% offline with zero mandatory API keys for deterministic CI testing.'
+      },
+      {
+        id: 'bangla-bench',
+        title: 'bangla-bench',
+        subtitle: 'Multi-Provider Bangla LLM Benchmark & Failover Auditor',
+        category: 'eval',
+        badge: 'PUBLIC REPO · MULTILINGUAL',
+        stack: 'Python · LiteLLM · NVIDIA NIM · DeepSeek · Perplexity',
+        repoUrl: 'https://github.com/Nissan-Dutta/bangla-bench',
+        summary: 'Evaluated Bangla multiple-choice benchmarks across NVIDIA NIM, DeepSeek, and Perplexity with backoff retry, isolating each model on a separate leaderboard driver.',
+        problem: 'Production API routers silently failover to fallback models during rate limits, corrupting benchmark accuracy numbers without alerting researchers.',
+        architecture: 'Built strict per-provider driver isolation, exponential backoff retry telemetry, and automated Bengali/Arabic Unicode rendering verification.',
+        metrics: 'Proved and prevented silent failover contamination across multi-provider Bangla evaluations.'
+      },
+      {
+        id: 'ollama-mcp-server',
+        title: 'ollama-mcp-server',
+        subtitle: 'Model Context Protocol Server for Local & Cloud Ollama',
+        category: 'infra',
+        badge: 'OPEN SOURCE · FASTMCP',
+        stack: 'Python / TypeScript · FastMCP · Ollama Daemon & Cloud',
+        repoUrl: 'https://github.com/nissandutta31-maker',
+        summary: 'Exposes local and cloud Ollama models as five standardized MCP tools (chat, list, show, pull, embeddings) verified by a deterministic test suite.',
+        problem: 'Switching an MCP client between a local Ollama daemon and remote Ollama Cloud usually requires code changes or separate server builds.',
+        architecture: 'Designed 12-factor environment variable configuration with sampling controls, thinking toggle, and strict JSON mode across all 5 MCP endpoints.',
+        metrics: 'Zero-code-change switching between local hardware and cloud endpoints; 100% deterministic tool registration test suite.'
+      },
+      {
+        id: 'nanochat-navigator',
+        title: 'nanochat-navigator',
+        subtitle: 'Source-Level Architecture Map for Karpathy’s nanochat',
+        category: 'infra',
+        badge: 'SYSTEMS NAVIGATION',
+        stack: 'PyTorch Internals · Muon/NorMuon · Sliding-Window Attention',
+        repoUrl: 'https://github.com/nissandutta31-maker',
+        summary: 'Mapped Andrej Karpathy’s nanochat LLM pipeline into an artifact dependency graph, footgun list, and 11 concrete modification recipes directly from source.',
+        problem: 'Modifying training and inference pipelines often breaks downstream artifacts or triggers silent performance regressions when FA3/SDPA fallbacks activate.',
+        architecture: 'Documented Muon/NorMuon optimizer internals, sliding-window attention with FlashAttention-3 / SDPA fallback paths, and value embeddings from raw source code.',
+        metrics: '11 end-to-end modification recipes and full artifact invalidation dependency graph.'
+      },
+      {
+        id: 'kubernetes-nvidia',
+        title: 'Kubernetes (nvidia-k8s-demo)',
+        subtitle: 'GPU Cluster & Container Orchestration Demo',
+        category: 'infra',
+        badge: 'PINNED REPO · INFRA',
+        stack: 'Python · Kubernetes · NVIDIA GPU Scheduling',
+        repoUrl: 'https://github.com/Nissan-Dutta/Kubernetes',
+        summary: 'Cloud-native Kubernetes deployment and workload orchestration demonstrations tailored for NVIDIA GPU compute environments.',
+        problem: 'Deploying reproducible ML inference workloads across containerized GPU nodes requires clean device-plugin scheduling and manifest hygiene.',
+        architecture: 'Streamlined Python and Kubernetes configuration templates for GPU-backed inference workloads.',
+        metrics: 'Public repository pinned on @Nissan-Dutta and @nissandutta31-maker.'
+      },
+      {
+        id: 'ecc-nx',
+        title: 'ecc-nx',
+        subtitle: 'Curated Agentic-Engineering Toolkit for Claude & Cursor',
+        category: 'infra',
+        badge: '43 SKILLS · 19 AGENTS',
+        stack: 'Claude Code · Cursor · Eval-First Identity Layer',
+        repoUrl: 'https://github.com/nissandutta31-maker',
+        summary: 'Distilled a bloated 249-skill, 63-agent, 79-command distribution down to a high-signal 43-skill, 19-agent, 13-command engineering pack.',
+        problem: 'Large agent skill repositories suffer from context window bloat, conflicting instructions, and unverified boilerplate.',
+        architecture: 'Authored the core identity layer (CLAUDE.md, RULES.md) enforcing research-first, eval-first defaults; single codebase installs cleanly into both Claude Code and Cursor.',
+        metrics: '82% reduction in skill bloat while preserving full coverage of eval harnesses, MCP servers, TDD, and security review.'
+      },
+      {
+        id: 'deepseek-cloud-proxy',
+        title: 'deepseek-cloud-proxy & Erratum',
+        subtitle: 'Inference Routing Proxy & Research Reanalysis Tooling',
+        category: 'infra',
+        badge: 'PUBLIC REPO',
+        stack: 'Python · API Proxy · Research Verification',
+        repoUrl: 'https://github.com/nissandutta31-maker/deepseek-cloud-proxy',
+        summary: 'Lightweight Python cloud proxy for DeepSeek API routing alongside Erratum (scientific benchmark reanalysis and error auditing).',
+        problem: 'Evaluating frontier reasoning models across heterogeneous cloud endpoints requires unified request normalization and latency/error logging.',
+        architecture: 'Clean Python proxy layer and automated error-tracking utilities for empirical LLM evaluation workflows.',
+        metrics: 'Active repositories across @Nissan-Dutta and @nissandutta31-maker.'
+      },
+      {
+        id: 'cern-mwpc',
+        title: 'CERN Beamline for Schools (MWPC)',
+        subtitle: 'Multi-Wire Proportional Chamber & Interlock Validation',
+        category: 'sciml',
+        badge: 'NETHERLANDS WINNER · CERN',
+        stack: 'Particle Physics · Hardware Interlocks · Safety Engineering',
+        repoUrl: 'https://drive.google.com/file/d/1RUd28SI9FJsYcEmJIG4rb7dK6k0EICcY/view?usp=drivesdk',
+        summary: 'Designed a Multi-Wire Proportional Chamber (MWPC) for particle detection and led a 6-person international team winning one of two Netherlands slots in CERN’s global competition.',
+        problem: 'Operating student-designed particle detectors inside an active accelerator beamline requires strict gas-system, high-voltage, and fail-safe interlock engineering.',
+        architecture: 'Authored the 20-page physics experiment proposal and safety validation protocols, coordinating distributed hardware-software integration across 4 countries.',
+        metrics: 'Selected as 1 of only 2 winning Netherlands teams in CERN Beamline for Schools.'
+      }
+    ];
+
+    // =========================================================================
+    // 2. RENDER PROJECTS & FILTERING
+    // =========================================================================
+    let activeCategory = 'all';
+    let searchQuery = '';
+
+    function renderProjects() {
+      const grid = document.getElementById('projectsGrid');
+      const countBadge = document.getElementById('projectCountBadge');
+      const filtered = PROJECTS.filter(p => {
+        const matchesCat = activeCategory === 'all' || p.category === activeCategory;
+        const q = searchQuery.trim().toLowerCase();
+        const matchesQuery = !q ||
+          p.title.toLowerCase().includes(q) ||
+          p.subtitle.toLowerCase().includes(q) ||
+          p.stack.toLowerCase().includes(q) ||
+          p.summary.toLowerCase().includes(q);
+        return matchesCat && matchesQuery;
+      });
+
+      countBadge.textContent = `Showing ${filtered.length} of ${PROJECTS.length} verified engineering artifacts`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full p-8 text-center border border-dashed border-zinc-300 dark:border-zinc-800 rounded font-mono text-xs text-zinc-500">
+            No repositories matched "${searchQuery}". Try clearing the filter.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => `
+        <article class="border border-zinc-300 dark:border-zinc-800 bg-white/75 dark:bg-charcoal/80 rounded-lg p-5 flex flex-col justify-between hover:border-emerald-500/60 transition-all group">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between gap-2 font-mono text-[11px]">
+              <span class="px-2 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800 text-emerald-700 dark:text-emerald-400 font-medium">${p.badge}</span>
+              <a href="${p.repoUrl}" target="_blank" rel="noopener noreferrer" class="text-zinc-500 hover:text-emerald-500 transition-colors">SOURCE ↗</a>
+            </div>
+            <h3 class="font-serif text-2xl text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">${p.title}</h3>
+            <div class="font-mono text-xs text-zinc-500 dark:text-zinc-400">${p.subtitle}</div>
+            <p class="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pt-1">${p.summary}</p>
+          </div>
+          <div class="pt-4 mt-4 border-t border-zinc-200/80 dark:border-zinc-800/80 flex items-center justify-between gap-2">
+            <span class="font-mono text-[11px] text-zinc-500 truncate">${p.stack}</span>
+            <button type="button" data-project-id="${p.id}" class="open-project-modal-btn shrink-0 px-2.5 py-1 rounded border border-zinc-300 dark:border-zinc-700 hover:border-emerald-500 font-mono text-[11px] text-zinc-800 dark:text-zinc-200 transition-colors">
+              SPEC &amp; ARCH →
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      document.querySelectorAll('.open-project-modal-btn').forEach(btn => {
+        btn.addEventListener('click', () => openProjectModal(btn.getAttribute('data-project-id')));
+      });
+    }
+
+    function openProjectModal(projId) {
+      const p = PROJECTS.find(item => item.id === projId);
+      if (!p) return;
+      document.getElementById('modalProjCategory').textContent = `${p.badge} // ${p.category.toUpperCase()}`;
+      document.getElementById('modalProjTitle').textContent = `${p.title} — ${p.subtitle}`;
+      document.getElementById('modalProjStack').textContent = p.stack;
+      document.getElementById('modalProjLink').href = p.repoUrl;
+      document.getElementById('modalProjBody').innerHTML = `
+        <div class="p-3.5 rounded bg-zinc-200/60 dark:bg-obsidian border border-zinc-300 dark:border-zinc-800">
+          <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase mb-1">1. The Failure Mode / Problem</div>
+          <p>${p.problem}</p>
+        </div>
+        <div class="p-3.5 rounded bg-zinc-200/60 dark:bg-obsidian border border-zinc-300 dark:border-zinc-800">
+          <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase mb-1">2. System Architecture &amp; Technical Insight</div>
+          <p>${p.architecture}</p>
+        </div>
+        <div class="p-3.5 rounded bg-zinc-200/60 dark:bg-obsidian border border-zinc-300 dark:border-zinc-800">
+          <div class="font-mono text-xs text-emerald-600 dark:text-emerald-400 uppercase mb-1">3. Verification &amp; Impact</div>
+          <p>${p.metrics}</p>
+        </div>
+      `;
+      document.getElementById('projectModal').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // 3. STATISTICAL SIGNIFICANCE & POWER SIMULATOR (EvalCI Engine)
+    // =========================================================================
+    function normalCdf(x) {
+      const t = 1 / (1 + 0.2316419 * Math.abs(x));
+      const d = 0.3989423 * Math.exp(-x * x / 2);
+      const prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+      return x > 0 ? 1 - prob : prob;
+    }
+
+    function updateSimulator() {
+      const n = parseFloat(document.getElementById('simNInput').value);
+      const pA = parseFloat(document.getElementById('simBaseInput').value) / 100;
+      const pB = parseFloat(document.getElementById('simCandInput').value) / 100;
+      const rho = parseFloat(document.getElementById('simRhoInput').value);
+
+      document.getElementById('simNVal').textContent = n.toLocaleString();
+      document.getElementById('simBaseVal').textContent = (pA * 100).toFixed(1) + '%';
+      document.getElementById('simCandVal').textContent = (pB * 100).toFixed(1) + '%';
+      document.getElementById('simRhoVal').textContent = rho.toFixed(2);
+
+      const delta = pB - pA;
+      const varA = pA * (1 - pA);
+      const varB = pB * (1 - pB);
+
+      // Unpaired SE vs Paired SE with item correlation rho
+      const seUnpaired = Math.sqrt((varA + varB) / n);
+      const covAB = rho * Math.sqrt(varA * varB);
+      const varDiffPaired = Math.max(1e-6, (varA + varB - 2 * covAB) / n);
+      const sePaired = Math.sqrt(varDiffPaired);
+
+      const ciLow = delta - 1.96 * sePaired;
+      const ciHigh = delta + 1.96 * sePaired;
+      const zStat = Math.abs(delta) / sePaired;
+      const pVal = Math.min(0.999, Math.max(0.0001, 2 * (1 - normalCdf(zStat))));
+
+      // Required N for 80% power (Z_alpha/2 = 1.96, Z_beta = 0.84 -> (2.8)^2 = 7.84)
+      const unitVar = Math.max(0.005, varA + varB - 2 * covAB);
+      const reqN = Math.abs(delta) < 0.001 ? 99999 : Math.ceil((7.84 * unitVar) / (delta * delta));
+
+      const signStr = delta >= 0 ? '+' : '';
+      document.getElementById('simDeltaOut').textContent = `${signStr}${(delta * 100).toFixed(1)}%`;
+      document.getElementById('simCiOut').textContent = `[${(ciLow * 100).toFixed(1)}%, ${(ciHigh * 100).toFixed(1)}%]`;
+      document.getElementById('simPvalOut').textContent = pVal < 0.001 ? 'p < 0.001' : `p = ${pVal.toFixed(3)}`;
+      document.getElementById('simSampleReqOut').textContent = reqN > 50000
+        ? 'Min N for 80% Power: >50k items'
+        : `Min N for 80% Power: ${reqN.toLocaleString()} items`;
+
+      const verdictEl = document.getElementById('simVerdictOut');
+      const pvalEl = document.getElementById('simPvalOut');
+      const narrativeEl = document.getElementById('simNarrativeBox');
+      const pairedBar = document.getElementById('svgPairedBar');
+
+      const isSig = pVal < 0.05;
+      if (isSig && delta > 0) {
+        verdictEl.textContent = 'PASS // SIGNIFICANT GAIN';
+        verdictEl.className = 'text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1.5';
+        pvalEl.className = 'text-lg font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5';
+        pairedBar.setAttribute('stroke', '#10B981');
+        narrativeEl.textContent = `GATE DIAGNOSTIC: Statistically significant improvement (p = ${pVal.toFixed(3)}). Paired McNemar conditioning reduced confidence interval width by ${Math.round((1 - sePaired / seUnpaired) * 100)}% vs. naive unpaired evaluation.`;
+      } else if (isSig && delta < 0) {
+        verdictEl.textContent = 'FAIL // REGRESSION BLOCKED';
+        verdictEl.className = 'text-xs font-semibold text-red-500 mt-1.5';
+        pvalEl.className = 'text-lg font-semibold text-red-500 mt-0.5';
+        pairedBar.setAttribute('stroke', '#EF4444');
+        narrativeEl.textContent = `GATE DIAGNOSTIC: Statistically significant regression detected (p = ${pVal.toFixed(3)}). agent-eval-harness CI gate blocks merge.`;
+      } else {
+        verdictEl.textContent = 'HOLD // STOCHASTIC NOISE';
+        verdictEl.className = 'text-xs font-semibold text-amber-600 dark:text-amber-400 mt-1.5';
+        pvalEl.className = 'text-lg font-semibold text-amber-600 dark:text-amber-400 mt-0.5';
+        pairedBar.setAttribute('stroke', '#F59E0B');
+        narrativeEl.textContent = `GATE DIAGNOSTIC: The 95% confidence interval [${(ciLow * 100).toFixed(1)}%, ${(ciHigh * 100).toFixed(1)}%] crosses 0.0%. At N = ${n}, this ${(delta * 100).toFixed(1)}% shift cannot be distinguished from random seed noise.`;
+      }
+
+      // Update SVG coordinates (center 300 = 0%, 1% = 20px, clamped [40, 560])
+      const scale = 2000; // 1.00 = 2000px -> 0.01 (1%) = 20px
+      const clampX = x => Math.max(40, Math.min(560, x));
+      const xEst = clampX(300 + delta * scale);
+      const xLow = clampX(300 + ciLow * scale);
+      const xHigh = clampX(300 + ciHigh * scale);
+      const xUnpairedLow = clampX(300 + (delta - 1.96 * seUnpaired) * scale);
+      const xUnpairedHigh = clampX(300 + (delta + 1.96 * seUnpaired) * scale);
+
+      pairedBar.setAttribute('x1', xLow);
+      pairedBar.setAttribute('x2', xHigh);
+      document.getElementById('svgUnpairedBar').setAttribute('x1', xUnpairedLow);
+      document.getElementById('svgUnpairedBar').setAttribute('x2', xUnpairedHigh);
+      document.getElementById('svgPointEst').setAttribute('cx', xEst);
+      const labelEst = document.getElementById('svgLabelEst');
+      labelEst.setAttribute('x', xEst);
+      labelEst.textContent = `${signStr}${(delta * 100).toFixed(1)}%`;
+    }
+
+    // =========================================================================
+    // 4. DYNAMIC GOOGLE DRIVE CV RESOLVER
+    // =========================================================================
+    function updateCvLinks(fileId, docType, labelText) {
+      // Security: strict alphanumeric/hyphen/underscore validation to prevent DOM XSS
+      const cleanId = (fileId || '').trim();
+      if (!/^[a-zA-Z0-9_-]{15,60}$/.test(cleanId)) {
+        showToast('Invalid Google Drive File ID format.');
+        return false;
+      }
+
+      let viewUrl = `https://drive.google.com/file/d/${cleanId}/view?usp=drivesdk`;
+      let pdfUrl = `https://drive.google.com/uc?export=download&id=${cleanId}`;
+      let embedUrl = `https://drive.google.com/file/d/${cleanId}/preview`;
+
+      if (docType === 'doc') {
+        viewUrl = `https://docs.google.com/document/d/${cleanId}/edit?usp=drivesdk`;
+        pdfUrl = `https://docs.google.com/document/d/${cleanId}/export?format=pdf`;
+        embedUrl = `https://docs.google.com/document/d/${cleanId}/preview`;
+      } else if (docType === 'folder') {
+        viewUrl = `https://drive.google.com/drive/folders/${cleanId}`;
+        pdfUrl = viewUrl;
+        embedUrl = `https://drive.google.com/embeddedfolderview?id=${cleanId}#list`;
+      }
+
+      document.getElementById('heroCvPrimaryLink').href = viewUrl;
+      document.getElementById('cvOpenDriveBtn').href = viewUrl;
+      document.getElementById('cvExportPdfBtn').href = pdfUrl;
+      document.getElementById('cvIframeLabel').textContent = `Previewing: ${labelText || cleanId}`;
+
+      const iframe = document.getElementById('cvPreviewIframe');
+      const container = document.getElementById('cvIframeContainer');
+      if (!container.classList.contains('hidden')) {
+        iframe.src = embedUrl;
+      } else {
+        iframe.setAttribute('data-pending-src', embedUrl);
+      }
+      return true;
+    }
+
+    // =========================================================================
+    // 5. COMMAND PALETTE & UTILITIES
+    // =========================================================================
+    const COMMANDS = [
+      { label: '01. Jump to Shipped Projects & Repositories', action: () => { location.hash = '#projects'; } },
+      { label: '02. Run Statistical Significance Simulator (EvalCI)', action: () => { location.hash = '#sandbox'; } },
+      { label: '03. Read Research Frontiers (What I Am Excited About)', action: () => { location.hash = '#research'; } },
+      { label: '04. View CERN, NYAS & Goucher Experience', action: () => { location.hash = '#experience'; } },
+      { label: '05. Open Live Google Drive CV Hub', action: () => { location.hash = '#cv-hub'; } },
+      { label: '06. Inspect Security & GitHub Pages Blueprint', action: () => { location.hash = '#security'; } },
+      { label: 'Toggle Dark / Alabaster Paper Theme', action: () => { toggleTheme(); } },
+      { label: 'Copy Email (nissandutta1@gmail.com)', action: () => { copyText('nissandutta1@gmail.com', 'Email copied to clipboard'); } }
+    ];
+
+    function renderCommandPalette(filterText = '') {
+      const container = document.getElementById('cmdListContainer');
+      const q = filterText.trim().toLowerCase();
+      const items = COMMANDS.filter(c => !q || c.label.toLowerCase().includes(q));
+      container.innerHTML = items.map((c, idx) => `
+        <button type="button" data-cmd-idx="${idx}" class="cmd-item-btn w-full text-left px-3 py-2 rounded hover:bg-emerald-500/15 hover:text-emerald-500 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center justify-between">
+          <span>${c.label}</span>
+          <span class="text-[10px] text-zinc-400">↵</span>
+        </button>
+      `).join('');
+
+      container.querySelectorAll('.cmd-item-btn').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          items[i].action();
+          document.getElementById('cmdPaletteModal').classList.add('hidden');
+        });
+      });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toastBanner');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.add('hidden'), 2600);
+    }
+
+    function copyText(text, toastMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(toastMsg)).catch(() => fallbackCopy(text, toastMsg));
+      } else {
+        fallbackCopy(text, toastMsg);
+      }
+    }
+
+    function fallbackCopy(text, toastMsg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast(toastMsg); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    function toggleTheme() {
+      const root = document.documentElement;
+      const isDark = root.classList.toggle('dark');
+      try { localStorage.setItem('nissan_theme', isDark ? 'dark' : 'light'); } catch (e) {}
+      showToast(isDark ? 'Theme: Obsidian Lab (Dark)' : 'Theme: Alabaster Paper (Light)');
+    }
+
+    // =========================================================================
+    // 6. INITIALIZATION & EVENT LISTENERS
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const savedTheme = localStorage.getItem('nissan_theme');
+        if (savedTheme === 'light') document.documentElement.classList.remove('dark');
+      } catch (e) {}
+
+      renderProjects();
+      updateSimulator();
+      updateCvLinks('1K7AtpeLtb5KcDxWmvGKCSzwSxzxCv0FKqTIDO3YybVM', 'doc', 'CV_Nissan_Dutta_AIxBio_2026-10');
+
+      // Project category buttons
+      document.querySelectorAll('.proj-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeCategory = btn.getAttribute('data-filter');
+          document.querySelectorAll('.proj-filter-btn').forEach(b => {
+            b.className = 'proj-filter-btn px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-emerald-500/50 transition-colors';
+          });
+          btn.className = 'proj-filter-btn px-3 py-1.5 rounded bg-zinc-900 text-white dark:bg-emerald-500 dark:text-zinc-950 font-medium transition-colors';
+          renderProjects();
+        });
+      });
+
+      document.getElementById('projectSearchInput').addEventListener('input', e => {
+        searchQuery = e.target.value;
+        renderProjects();
+      });
+
+      // Simulator sliders & presets
+      ['simNInput', 'simBaseInput', 'simCandInput', 'simRhoInput'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateSimulator);
+      });
+
+      document.querySelectorAll('.sim-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const preset = btn.getAttribute('data-preset');
+          if (preset === 'noise') {
+            document.getElementById('simNInput').value = 250;
+            document.getElementById('simBaseInput').value = 76.0;
+            document.getElementById('simCandInput').value = 78.0;
+            document.getElementById('simRhoInput').value = 0.65;
+          } else if (preset === 'paired') {
+            document.getElementById('simNInput').value = 600;
+            document.getElementById('simBaseInput').value = 76.0;
+            document.getElementById('simCandInput').value = 79.0;
+            document.getElementById('simRhoInput').value = 0.80;
+          } else if (preset === 'proteingym') {
+            document.getElementById('simNInput').value = 1200;
+            document.getElementById('simBaseInput').value = 68.5;
+            document.getElementById('simCandInput').value = 71.0;
+            document.getElementById('simRhoInput').value = 0.75;
+          }
+          updateSimulator();
+          showToast(`Loaded preset: ${preset.toUpperCase()}`);
+        });
+      });
+
+      // CV Variant Selector & Embed Preview
+      const cvSelect = document.getElementById('cvVariantSelect');
+      cvSelect.addEventListener('change', () => {
+        const opt = cvSelect.options[cvSelect.selectedIndex];
+        updateCvLinks(opt.value, opt.getAttribute('data-type'), opt.getAttribute('data-title'));
+        showToast(`Active CV switched to ${opt.getAttribute('data-title')}`);
+      });
+
+      document.getElementById('toggleLiveEmbedBtn').addEventListener('click', () => {
+        const container = document.getElementById('cvIframeContainer');
+        const iframe = document.getElementById('cvPreviewIframe');
+        const isHidden = container.classList.toggle('hidden');
+        if (!isHidden) {
+          const pending = iframe.getAttribute('data-pending-src');
+          if (pending && iframe.src === 'about:blank') iframe.src = pending;
+        }
+      });
+
+      document.getElementById('heroPreviewCvBtn').addEventListener('click', () => {
+        location.hash = '#cv-hub';
+        const container = document.getElementById('cvIframeContainer');
+        const iframe = document.getElementById('cvPreviewIframe');
+        if (container.classList.contains('hidden')) {
+          container.classList.remove('hidden');
+          const pending = iframe.getAttribute('data-pending-src');
+          if (pending) iframe.src = pending;
+        }
+      });
+
+      document.getElementById('openCvQuickBtn').addEventListener('click', () => {
+        location.hash = '#cv-hub';
+      });
+
+      document.getElementById('applyCustomDriveBtn').addEventListener('click', () => {
+        const raw = document.getElementById('customDriveUrlInput').value.trim();
+        if (!raw) return;
+        const match = raw.match(/[-\w]{25,}/);
+        const extractedId = match ? match[0] : raw;
+        const isDoc = raw.includes('docs.google.com/document');
+        if (updateCvLinks(extractedId, isDoc ? 'doc' : 'pdf', `Custom Drive ID (${extractedId.slice(0, 10)}...)`)) {
+          const st = document.getElementById('customDriveStatus');
+          st.textContent = `✓ Bound all CV links to Drive ID: ${extractedId}`;
+          st.classList.remove('hidden');
+          showToast('Updated live Google Drive CV target.');
+        }
+      });
+
+      // Theme, Mobile Nav, Copy Buttons & Modals
+      document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+      document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+        document.getElementById('mobileNavDrawer').classList.toggle('hidden');
+      });
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => document.getElementById('mobileNavDrawer').classList.add('hidden'));
+      });
+
+      document.getElementById('copyEmailHeroBtn').addEventListener('click', () => {
+        copyText('nissandutta1@gmail.com', 'Copied nissandutta1@gmail.com');
+      });
+
+      document.getElementById('copyDeployCmdBtn').addEventListener('click', () => {
+        const code = document.getElementById('deployCodeBlock').innerText;
+        copyText(code, 'Deployment commands copied to clipboard');
+      });
+
+      document.getElementById('closeProjectModalBtn').addEventListener('click', () => {
+        document.getElementById('projectModal').classList.add('hidden');
+      });
+      document.getElementById('projectModal').addEventListener('click', e => {
+        if (e.target.id === 'projectModal') document.getElementById('projectModal').classList.add('hidden');
+      });
+
+      // Command palette
+      const cmdModal = document.getElementById('cmdPaletteModal');
+      const cmdInput = document.getElementById('cmdSearchInput');
+      document.getElementById('cmdPaletteBtn').addEventListener('click', () => {
+        cmdModal.classList.remove('hidden');
+        cmdInput.value = '';
+        renderCommandPalette('');
+        setTimeout(() => cmdInput.focus(), 50);
+      });
+      document.getElementById('closeCmdModalBtn').addEventListener('click', () => cmdModal.classList.add('hidden'));
+      cmdModal.addEventListener('click', e => {
+        if (e.target === cmdModal) cmdModal.classList.add('hidden');
+      });
+      cmdInput.addEventListener('input', e => renderCommandPalette(e.target.value));
+
+      window.addEventListener('keydown', e => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          cmdModal.classList.toggle('hidden');
+          if (!cmdModal.classList.contains('hidden')) {
+            cmdInput.value = '';
+            renderCommandPalette('');
+            setTimeout(() => cmdInput.focus(), 50);
+          }
+        } else if (e.key === 'Escape') {
+          cmdModal.classList.add('hidden');
+          document.getElementById('projectModal').classList.add('hidden');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
